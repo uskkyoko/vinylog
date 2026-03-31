@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
+import { FormError } from "../../components/FormError";
 import { useSearch } from "../../hooks/useSearch";
 import { SearchIntro } from "./SearchIntro";
 import { SearchEmpty } from "./SearchEmpty";
@@ -28,7 +29,8 @@ export default function Search() {
       <section className="search-results">
         <div className="container search-results__container">
           <SearchIntro query={query} />
-          {error && <p style={{ color: "red" }}>Search error: {error}</p>}
+          {/** Uses the shared error component for consistent styling across the app. */}
+          <FormError message={error} />
           {hasResults ? (
             <>
               <SearchArtistsSection artists={results.artists} />

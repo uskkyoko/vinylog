@@ -1,19 +1,17 @@
-import { AppLayout } from "../../components/AppLayout";
+/**
+ * Create List page — thin shell that delegates all form logic to ListForm.
+ *
+ * Data flow: ListForm local state → on submit → Redux createList thunk
+ * → navigate to /lists/:newId.
+ */
+import { FormPageShell } from "../../components/FormPageShell";
 import { ListForm } from "./ListForm";
 import "./Lists.css";
 
 export default function CreateList() {
   return (
-    <AppLayout>
-      <section className="list-form-page">
-        <div className="list-form-page__card">
-          <div className="list-form-page__header">
-            <p className="eyebrow">Curate your collection</p>
-            <h1 className="list-form-page__title">Create a New List</h1>
-          </div>
-          <ListForm />
-        </div>
-      </section>
-    </AppLayout>
+    <FormPageShell eyebrow="Curate your collection" title="Create a New List">
+      <ListForm />
+    </FormPageShell>
   );
 }

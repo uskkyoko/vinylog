@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "../../components/Button";
 import { api } from "../../api";
 import type { UserSummary } from "../../types";
 
@@ -28,13 +29,14 @@ export function FollowModal({
       <div className="follow-modal" onClick={(e) => e.stopPropagation()}>
         <div className="follow-modal__header">
           <h2 className="follow-modal__title">{title}</h2>
-          <button
+          <Button
+            variant="ghost"
             className="follow-modal__close"
             onClick={onClose}
             aria-label="Close"
           >
             ✕
-          </button>
+          </Button>
         </div>
         <ul className="follow-modal__list">
           {loading ? (

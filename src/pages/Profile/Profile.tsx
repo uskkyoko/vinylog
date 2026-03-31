@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import "./Profile.css";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import { useProfileData } from "../../hooks/useProfileData";
 import { ProfileHeader } from "./ProfileHeader";
 import { ProfileLists } from "./ProfileLists";

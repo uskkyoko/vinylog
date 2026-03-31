@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import { useAppDispatch } from "../../hooks/hooks";
 import { useListDetail } from "../../hooks/useListDetail";
 import { deleteList } from "../../store/listsSlice";

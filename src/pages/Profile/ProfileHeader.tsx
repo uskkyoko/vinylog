@@ -1,3 +1,11 @@
+/**
+ * Profile card header — shows avatar, name, bio, follow/edit action,
+ * follower/following counts (clicking each opens a FollowModal), and
+ * the user's favourite albums grid.
+ *
+ * State: openModal tracks which modal is open ("followers" | "following" | null).
+ * All other data flows in via props from the Profile page.
+ */
 import { useState } from "react";
 import { Button, ButtonLink } from "../../components/Button";
 import type { UserOut, AlbumOut } from "../../types";
@@ -60,22 +68,25 @@ export function ProfileHeader({
 
       <ul className="stats">
         <li>
-          <button
+          {/** Opens the followers modal; Button passes className so .stats__btn styles apply. */}
+          <Button
+            variant="ghost"
             className="stats__btn"
             onClick={() => setOpenModal("followers")}
           >
             <span>{user.followers_count ?? 0}</span>
             Followers
-          </button>
+          </Button>
         </li>
         <li>
-          <button
+          <Button
+            variant="ghost"
             className="stats__btn"
             onClick={() => setOpenModal("following")}
           >
             <span>{user.following_count ?? 0}</span>
             Following
-          </button>
+          </Button>
         </li>
       </ul>
 

@@ -1,4 +1,4 @@
-import type { AlbumOut, AlbumSearchResult, SpotifyAlbumLookup, TrendingAlbumOut, TrackOut } from "../types";
+import type { AlbumOut, AlbumSearchResult, SpotifyAlbumLookup, TrendingAlbumsResponse, TrackOut } from "../types";
 import { get } from "./http";
 
 export const albumsApi = {
@@ -10,8 +10,8 @@ export const albumsApi = {
   getAlbumBySpotifyId: (spotifyId: string): Promise<SpotifyAlbumLookup> =>
     get<SpotifyAlbumLookup>(`/albums/spotify/${spotifyId}`),
 
-  getTrendingAlbums: (): Promise<TrendingAlbumOut[]> =>
-    get<TrendingAlbumOut[]>("/albums/trending"),
+  getTrendingAlbums: (): Promise<TrendingAlbumsResponse> =>
+    get<TrendingAlbumsResponse>("/albums/trending"),
 
   getFeaturedAlbums: (): Promise<AlbumOut[]> =>
     get<AlbumOut[]>("/albums/featured"),

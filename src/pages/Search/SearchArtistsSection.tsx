@@ -1,49 +1,13 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import type { SpotifyArtistResult } from "../../types";
-import { api } from "../../api";
+/**
+ * Artists section of the search results page.
+ *
+ * Renders a grid of SearchArtistCard components. Each card triggers a
+ * Spotify sync on click — that logic lives in SearchArtistCard, keeping
+ * this section as a pure layout wrapper.
+ */
 import { SearchResultsSection } from "./SearchResultsSection";
-
-function SearchArtistCard({ artist }: { artist: SpotifyArtistResult }) {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-
-  async function handleClick() {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const result = await api.getSpotifyArtist(artist.spotify_id);
-      const data = result as { id: number };
-      navigate(`/artists/${data.id}`);
-    } catch {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <button
-      type="button"
-      className="search-results__artist-card"
-      onClick={handleClick}
-      disabled={loading}
-    >
-      {artist.image_url ? (
-        <img
-          src={artist.image_url}
-          alt={artist.name}
-          className="search-results__artist-image"
-        />
-      ) : (
-        <div className="search-results__artist-placeholder">
-          <span className="search-results__artist-placeholder-text">
-            {artist.name[0]}
-          </span>
-        </div>
-      )}
-      <h3 className="search-results__artist-name">{artist.name}</h3>
-    </button>
-  );
-}
+import { SearchArtistCard } from "./SearchArtistCard";
+import type { SpotifyArtistResult } from "../../types";
 
 export function SearchArtistsSection({
   artists,
@@ -51,6 +15,7 @@ export function SearchArtistsSection({
   artists: SpotifyArtistResult[];
 }) {
   if (artists.length === 0) return null;
+
   return (
     <SearchResultsSection title="Artists">
       {artists.map((artist) => (

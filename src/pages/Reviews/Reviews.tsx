@@ -1,43 +1,21 @@
+/**
+ * Full reviews list page — only accessible to the authenticated user.
+ *
+ * Data flow: reads reviews from Redux (state.reviews.items), which was
+ * populated by fetchReviews() dispatched in AppDataLoader when the user
+ * authenticated. No local fetch needed here.
+ */
 import { AppLayout } from "../../components/AppLayout";
-import { ButtonLink } from "../../components/Button";
-import { ReviewCard } from "../../components/ReviewCard/ReviewCard";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import { useAppSelector } from "../../hooks/hooks";
-import type { ReviewOut } from "../../types";
+import { ReviewsHeader } from "./ReviewsHeader";
+import { ReviewsList } from "./ReviewsList";
 import "../Profile/Profile.css";
-
-function ReviewsHeader() {
-  return (
-    <header className="profile-section__header">
-      <div>
-        <p className="eyebrow">Activity</p>
-        <h1 className="profile-section__title">All Reviews</h1>
-      </div>
-      <ButtonLink to="/profile" variant="ghost" size="sm">
-        Back to profile
-      </ButtonLink>
-    </header>
-  );
-}
-
-function ReviewsList({ reviews, username }: { reviews: ReviewOut[]; username: string }) {
-  return (
-    <div className="profile-reviews">
-      {reviews.length > 0 ? (
-        reviews.map((review) => (
-          <ReviewCard key={review.id} review={review} username={username} />
-        ))
-      ) : (
-        <div className="profile-reviews__empty">
-          <p>No reviews yet.</p>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default function Reviews() {
   const { user } = useAuth();
+
+  /** Reads directly from the Redux store — no additional fetch. */
   const reviews = useAppSelector((state) => state.reviews.items);
 
   if (!user) return null;

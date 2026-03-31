@@ -1,171 +1,302 @@
 # Architecture Review Results
 
-> Analyzed on: 2026-03-16
+> Analyzed on: 2026-03-26
 > Project: Vinylog Frontend (`src/`)
-> Total components analyzed: 46
-> Issues found: 3
+> Total components analyzed: 80 (pages + shared components + sub-components)
+> Issues found: 4
+
+---
 
 ## Summary
 
-Vinylog has a mature, deliberately designed frontend architecture. The dual-state split (AuthContext for identity, Redux for mutable user data), the `useFetch`-based domain hook layer, and the API abstraction in `src/api/` are all well-executed and consistently applied across the codebase. Three issues stand out: `Profile.tsx` performs a raw API call to refresh state after follow/unfollow where the context already owns that responsibility; `ArtistDetail.tsx` implements a three-step async load inline with `useState`/`useEffect` while every other page uses `useFetch`; and `ListForm.tsx` embeds two named sub-components in its own file where the project convention calls for co-located separate files.
+The previous round of fixes (ISSUE-01 through ISSUE-04) has been applied cleanly — every page now has a single component per file, the four form pages use `FormPageShell`, all raw `<button>` elements have been replaced with `<Button>`, and `Search.tsx` uses `<FormError>`. The overall architecture is now noticeably stronger. Four issues remain: `SettingsForm` still owns its own page shell instead of using `FormPageShell`; `ArtistDetailAlbums` inlines a 25-line album card inside `.map()`; `RecommendForm` mixes a complex loading overlay with the form markup; and `Login` / `Signup` repeat the same auth card shell structure.
+
+---
+
+## What Was Fixed (Previous Review)
+
+| Issue | Status |
+|---|---|
+| Sub-components defined in same file (7 files) | ✅ Fixed — all sub-components now have their own files |
+| Form page shell duplicated across 4 pages | ✅ Fixed — `FormPageShell` created, used by CreateReview, EditReview, CreateList, EditList |
+| Raw `<button>` elements in ProfileHeader, FollowModal, SearchArtistCard | ✅ Fixed — all use `<Button>` |
+| Inline `style` for error in Search.tsx | ✅ Fixed — now uses `<FormError>` |
 
 ---
 
 ## Issues
 
-### ARCH-01: Profile refreshes follow state with a raw API call instead of updating through context
-
-**Severity**: High
-**Principle**: Unclear Data Flow
-**Location**: `src/pages/Profile/Profile.tsx` (lines 28–38)
-
-After calling `followUser()` or `unfollowUser()` (context methods that already make the API request), `Profile.tsx` fires a second `api.getCurrentUser()` call to refresh the displayed user. This is a manual cache-bust that bypasses the state layer — errors in the refresh are silently swallowed, there is no loading feedback, and the pattern means `Profile.tsx` knows *how* follow updates the profile rather than just *that* it happened.
-
-#### Current (Bad)
-
-```tsx
-// Profile.tsx
-async function handleFollow() {
-  await followUser(username!);
-  const fresh = await api.getCurrentUser(username!); // raw refresh, no error handling
-  setPublicUser(fresh);
-}
-
-async function handleUnfollow() {
-  await unfollowUser(username!);
-  const fresh = await api.getCurrentUser(username!); // duplicated pattern
-  setPublicUser(fresh);
-}
-```
-
-#### Recommended (Good)
-
-Move the refresh into `useProfileData` by accepting an explicit `refresh` callback, or return a `refresh` function from the hook so the page stays at the right abstraction level:
-
-```tsx
-// hooks/useProfileData.ts — add a refresh function
-export function useProfileData(username: string) {
-  // ... existing state
-  async function refresh() {
-    const fresh = await api.getCurrentUser(username);
-    setPublicUser(fresh);
-  }
-  return { ..., refresh };
-}
-
-// Profile.tsx — page knows nothing about the API call
-async function handleFollow() {
-  await followUser(username!);
-  await refresh();
-}
-
-async function handleUnfollow() {
-  await unfollowUser(username!);
-  await refresh();
-}
-```
-
-**Why this is better**: `Profile.tsx` stays at the page abstraction level — it calls intent-named methods and the mechanics of how state is refreshed live in the hook where they belong. Adding error handling or optimistic updates only requires changing one place.
-
----
-
-### ARCH-02: ArtistDetail implements a three-step async load inline instead of using a custom hook
+### ISSUE-01: `SettingsForm` owns its own page shell instead of using `FormPageShell`
 
 **Severity**: Medium
-**Principle**: SLA Violation
-**Location**: `src/pages/ArtistDetail/ArtistDetail.tsx` (lines 18–49)
+**Principle**: Code Duplication / SLA Violation
+**Location**: `src/pages/Settings/SettingsForm.tsx:80–170`
 
-Every other detail page in the project (`AlbumDetail`, `ReviewDetail`, `ListDetail`, `Profile`) uses either `useFetch` or a domain hook to keep data-fetching out of the component body. `ArtistDetail` breaks this pattern with a 30-line `useEffect` that manually manages three sequential API calls, three state variables (`artist`, `loading`, `error`), and a cleanup flag — all of which `useFetch` already handles. A reader familiar with the rest of the codebase has to context-switch when they open this file.
+`SettingsForm` is responsible for two things at once: rendering the page shell (section, card, eyebrow, h1) *and* managing the form state and fields. This is the exact pattern that `FormPageShell` was created to eliminate — it reappears here because Settings was not updated alongside the other four form pages. When reading `Settings.tsx`, you see `<AppLayout><SettingsForm user={user} /></AppLayout>`, which makes it look like the shell is handled at the page level, but in reality `SettingsForm` reaches outside its role and renders the shell itself. The form component should only own form fields and submission logic.
 
 #### Current (Bad)
 
 ```tsx
-// ArtistDetail.tsx — 30 lines of async orchestration in the component
-const [artist, setArtist] = useState<ArtistDetails | null>(null);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(false);
-
-useEffect(() => {
-  let isMounted = true;
-  setLoading(true);
-  async function load() {
-    try {
-      const initial = await api.getArtistsDetails(artistId);
-      if (initial.spotify_id && initial.albums.length === 0) {
-        await api.getSpotifyArtist(initial.spotify_id).catch(() => {});
-        const synced = await api.getArtistsDetails(artistId);
-        if (isMounted) setArtist(synced);
-      } else {
-        if (isMounted) setArtist(initial);
-      }
-    } catch { if (isMounted) setError(true); }
-    finally { if (isMounted) setLoading(false); }
-  }
-  load();
-  return () => { isMounted = false; };
-}, [artistId]);
-```
-
-#### Recommended (Good)
-
-```tsx
-// hooks/useArtistDetail.ts — encapsulates the Spotify sync logic
-export function useArtistDetail(artistId: number) {
-  return useFetch<ArtistDetails | null>(
-    async () => {
-      const initial = await api.getArtistsDetails(artistId);
-      if (initial.spotify_id && initial.albums.length === 0) {
-        await api.getSpotifyArtist(initial.spotify_id).catch(() => {});
-        return api.getArtistsDetails(artistId);
-      }
-      return initial;
-    },
-    null,
-    [artistId],
+// src/pages/Settings/SettingsForm.tsx
+export function SettingsForm({ user }: { user: UserOut }) {
+  // ... state for fullName, biography, avatarFile, selectedAlbums ...
+  return (
+    <section className="settings settings--page">  {/* shell — not the form's job */}
+      <div className="settings__card">
+        <div className="settings__header">
+          <p className="eyebrow">Personalize</p>
+          <h1 className="settings__title">User Profile</h1>
+        </div>
+        <form className="settings__form" onSubmit={handleSubmit}>
+          {/* fields */}
+        </form>
+      </div>
+    </section>
   );
 }
 
-// ArtistDetail.tsx — back to the standard page pattern
-const { data: artist, loading, error } = useArtistDetail(artistId);
-```
-
-**Why this is better**: The page component is back to one line of data fetching — consistent with every other detail page in the project. The Spotify sync logic lives in a named hook that can be tested independently and updated without touching the page.
-
----
-
-### ARCH-03: ListForm defines two sub-components inline rather than as co-located files
-
-**Severity**: Low
-**Principle**: SLA Violation
-**Location**: `src/pages/Lists/ListForm.tsx` (lines 27–102)
-
-`ListForm.tsx` is 287 lines. The first 100 lines define `SearchResultItem` and `SelectedAlbumItem` — two fully independent, named presentational components — before the `ListForm` function begins. The project convention (stated in `CLAUDE.md` and followed everywhere else) is: co-located sub-components go in their own file. Having three components in one file makes the file harder to scan and obscures that `ListForm` is actually a composition of named sub-components.
-
-#### Current (Bad)
-
-```tsx
-// ListForm.tsx — 287 lines, three components in one file
-function SearchResultItem({ album, alreadyAdded, onAdd }) { /* 35 lines */ }
-function SelectedAlbumItem({ album, onRemove }) { /* 38 lines */ }
-export function ListForm({ list }: Props) { /* 185 lines */ }
+// src/pages/Settings/Settings.tsx
+export default function Settings() {
+  return (
+    <AppLayout>
+      <SettingsForm user={user} />  {/* shell is hidden inside */}
+    </AppLayout>
+  );
+}
 ```
 
 #### Recommended (Good)
 
+```tsx
+// src/pages/Settings/SettingsForm.tsx — only owns form fields + submission
+export function SettingsForm({ user }: { user: UserOut }) {
+  // ... same state ...
+  return (
+    <form className="settings__form" onSubmit={handleSubmit}>
+      {/* fields */}
+    </form>
+  );
+}
+
+// src/pages/Settings/Settings.tsx — owns the shell, consistent with other form pages
+export default function Settings() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return (
+    <FormPageShell eyebrow="Personalize" title="User Profile">
+      <SettingsForm user={user} />
+    </FormPageShell>
+  );
+}
 ```
-src/pages/Lists/
-  ListForm.tsx          ← only ListForm (now ~185 lines)
-  SearchResultItem.tsx  ← named export, its own file
-  SelectedAlbumItem.tsx ← named export, its own file
-```
+
+**Why this is better**: `FormPageShell` is now used consistently across all five form pages; reading any form page immediately shows its eyebrow/title and the form it hosts.
+
+---
+
+### ISSUE-02: `ArtistDetailAlbums` inlines a 25-line album card inside `.map()`
+
+**Severity**: Medium
+**Principle**: SLA Violation
+**Location**: `src/pages/ArtistDetail/ArtistDetailAlbums.tsx:19–47`
+
+The `.map()` callback renders a `<Link>` with a nested image/placeholder block and an info block containing three separate pieces of data — title, year, and a conditionally rendered rating. That is 25 lines of JSX per item, enough to have its own internal logic (the placeholder fallback, the rating condition). By the single-level test: you cannot describe what `ArtistDetailAlbums` renders in one sentence using only named children — you have to say "a grid of linked items each with an image or placeholder and three text fields". That unnamed item is the missing component.
+
+#### Current (Bad)
 
 ```tsx
-// ListForm.tsx — imports instead of embedding
-import { SearchResultItem } from "./SearchResultItem";
-import { SelectedAlbumItem } from "./SelectedAlbumItem";
+// ArtistDetailAlbums.tsx
+{albums.map((album) => (
+  <Link key={album.id} to={`/albums/${album.spotify_id}`} className="artist-albums__item">
+    <div className="artist-albums__item-image-wrapper">
+      {album.cover_url ? (
+        <img src={album.cover_url} alt={album.title} className="artist-albums__item-image" />
+      ) : (
+        <div className="artist-albums__item-image artist-albums__item-image--placeholder" />
+      )}
+    </div>
+    <div className="artist-albums__item-info">
+      <p className="artist-albums__item-title">{album.title}</p>
+      <p className="artist-albums__item-year">{album.release_date?.slice(0, 4)}</p>
+      {album.average_rating != null && (
+        <p className="artist-albums__item-rating">★ {album.average_rating.toFixed(1)}</p>
+      )}
+    </div>
+  </Link>
+))}
 ```
 
-**Why this is better**: `ListForm.tsx` now reads as a form that *composes* album-picker sub-components rather than *defining* them. Consistent with how every other page in the project organizes its co-located components.
+#### Recommended (Good)
+
+```tsx
+// src/pages/ArtistDetail/ArtistAlbumCard.tsx
+export function ArtistAlbumCard({ album }: { album: ArtistAlbumSummary }) {
+  return (
+    <Link to={`/albums/${album.spotify_id}`} className="artist-albums__item">
+      <div className="artist-albums__item-image-wrapper">
+        {album.cover_url ? (
+          <img src={album.cover_url} alt={album.title} className="artist-albums__item-image" />
+        ) : (
+          <div className="artist-albums__item-image artist-albums__item-image--placeholder" />
+        )}
+      </div>
+      <div className="artist-albums__item-info">
+        <p className="artist-albums__item-title">{album.title}</p>
+        <p className="artist-albums__item-year">{album.release_date?.slice(0, 4)}</p>
+        {album.average_rating != null && (
+          <p className="artist-albums__item-rating">★ {album.average_rating.toFixed(1)}</p>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+// ArtistDetailAlbums.tsx — now reads as a single sentence
+{albums.map((album) => (
+  <ArtistAlbumCard key={album.id} album={album} />
+))}
+```
+
+**Why this is better**: `ArtistDetailAlbums` becomes a pure grid layout; all the per-item rendering logic lives in `ArtistAlbumCard`, which can be read and tested in isolation.
+
+---
+
+### ISSUE-03: `RecommendForm` mixes a loading overlay with the form content
+
+**Severity**: Low
+**Principle**: SLA Violation
+**Location**: `src/pages/Recommend/RecommendForm.tsx:58–101`
+
+`RecommendForm` renders two entirely separate concerns in one return: an animated loading overlay (spinner with 3 rings, a rotating message) and the actual form (heading, textarea, submit button). These are at different abstraction levels — one is a full-screen UI state, the other is the form interaction surface. The overlay markup alone is 14 lines with its own inner structure. A reader of `RecommendForm` must mentally separate the overlay from the form; an `RecommendLoadingOverlay` component would make that boundary explicit.
+
+#### Current (Bad)
+
+```tsx
+// RecommendForm.tsx
+return (
+  <>
+    {loading && (
+      <div className="recommend-loading">          {/* full-screen overlay */}
+        <div className="recommend-loading__overlay" />
+        <div className="recommend-loading__content">
+          <div className="recommend-loading__spinner">
+            <div className="recommend-loading__spinner-ring" />
+            <div className="recommend-loading__spinner-ring" />
+            <div className="recommend-loading__spinner-ring" />
+          </div>
+          <h2 ...>Finding your next favourite album…</h2>
+          <p ...>{LOADING_MESSAGES[messageIndex]}</p>
+        </div>
+      </div>
+    )}
+    <div>
+      <h1 ...>AI Recommendation</h1>   {/* the actual form */}
+      {/* ... form fields ... */}
+    </div>
+  </>
+);
+```
+
+#### Recommended (Good)
+
+```tsx
+// src/pages/Recommend/RecommendLoadingOverlay.tsx
+export function RecommendLoadingOverlay({ message }: { message: string }) {
+  return (
+    <div className="recommend-loading">
+      <div className="recommend-loading__overlay" />
+      <div className="recommend-loading__content">
+        <div className="recommend-loading__spinner">
+          <div className="recommend-loading__spinner-ring" />
+          <div className="recommend-loading__spinner-ring" />
+          <div className="recommend-loading__spinner-ring" />
+        </div>
+        <h2 className="recommend-loading__title">Finding your next favourite album…</h2>
+        <p className="recommend-loading__text">{message}</p>
+      </div>
+    </div>
+  );
+}
+
+// RecommendForm.tsx
+return (
+  <>
+    {loading && <RecommendLoadingOverlay message={LOADING_MESSAGES[messageIndex]} />}
+    <div>
+      <h1 ...>AI Recommendation</h1>
+      {/* form fields */}
+    </div>
+  </>
+);
+```
+
+**Why this is better**: Each component has one job; the rotating message logic stays in `RecommendForm` (it owns the state), but the overlay's visual structure moves to its own file.
+
+---
+
+### ISSUE-04: `Login` and `Signup` repeat the same auth card shell
+
+**Severity**: Low
+**Principle**: Code Duplication
+**Location**: `src/pages/Auth/Login.tsx`, `src/pages/Auth/Signup.tsx`
+
+Both auth pages open with the identical structure: `<section className="auth"><div className="auth__card"><div className="auth__header"><p className="eyebrow">...</p><h1 className="auth__title">...</h1></div>`. If the auth card ever needs a border change, a max-width update, or an additional wrapper, it has to be changed in two files. An `AuthShell` component (eyebrow + title + children) would DRY this up in exactly the same way `FormPageShell` did for form pages — and would make the auth pages consistent with the rest of the codebase's shell pattern.
+
+Note: auth pages intentionally omit `AppLayout` (no nav/footer on login/signup), so `AuthShell` should NOT compose `AppLayout` — it is the top-level wrapper for those pages.
+
+#### Current (Bad)
+
+```tsx
+// Login.tsx  and  Signup.tsx — same opening 10 lines
+return (
+  <section className="auth">
+    <div className="auth__card">
+      <div className="auth__header">
+        <p className="eyebrow">Welcome back</p>   {/* "Join Vinylog" in Signup */}
+        <h1 className="auth__title">Log In</h1>   {/* "Sign Up" in Signup */}
+      </div>
+      {/* Google button, divider, form, error, alt link */}
+    </div>
+  </section>
+);
+```
+
+#### Recommended (Good)
+
+```tsx
+// src/pages/Auth/AuthShell.tsx
+export function AuthShell({
+  eyebrow,
+  title,
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="auth">
+      <div className="auth__card">
+        <div className="auth__header">
+          <p className="eyebrow">{eyebrow}</p>
+          <h1 className="auth__title">{title}</h1>
+        </div>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+// Login.tsx
+return (
+  <AuthShell eyebrow="Welcome back" title="Log In">
+    <Button variant="ghost" className="auth__google" ...>...</Button>
+    {/* ... */}
+  </AuthShell>
+);
+```
+
+**Why this is better**: The auth shell is defined once; Login and Signup reduce to their unique content — the Google button, form fields, and footer link.
 
 ---
 
@@ -173,9 +304,10 @@ import { SelectedAlbumItem } from "./SelectedAlbumItem";
 
 | Priority | Issue | Effort | Impact |
 |----------|-------|--------|--------|
-| 1 | ARCH-01: Follow refresh bypasses state layer | Low | High |
-| 2 | ARCH-02: ArtistDetail async load should be a hook | Low | Medium |
-| 3 | ARCH-03: Extract ListForm sub-components to own files | Very Low | Low |
+| 1 | ISSUE-01: SettingsForm owns page shell | Low | Medium |
+| 2 | ISSUE-02: ArtistDetailAlbums inlines 25-line album card | Low | Medium |
+| 3 | ISSUE-03: RecommendForm mixes loading overlay with form | Low | Low |
+| 4 | ISSUE-04: Login/Signup repeat auth card shell | Low | Low |
 
 ---
 
@@ -183,11 +315,11 @@ import { SelectedAlbumItem } from "./SelectedAlbumItem";
 
 | Criterion | Score (1–5) | Notes |
 |-----------|-------------|-------|
-| Single Level of Abstraction | 4 | Pages and components are clean; ArtistDetail and ListForm are the exceptions |
-| Component API Design | 5 | Props are minimal and well-typed throughout; `Button`, `FormField`, `AlbumPickerField` set a good standard |
-| Data Flow Clarity | 4 | Dual-state split is excellent; Profile's manual API refresh is the one inconsistency |
-| API Abstraction Layer | 5 | Domain objects + `http.ts` primitives + single `api` export is exactly right for this project size |
-| App Layout / Shell | 5 | Every page composes `<AppLayout>` itself — correct pattern, no router-level wrapper |
-| Code Duplication | 4 | Form error display (`auth__error`) repeated across forms; minor |
-| Composition Patterns | 5 | `useFetch` + domain hooks + Redux thunks compose cleanly; `AppDataLoader` bridge is well-designed |
-| **Overall** | **4.6** | Solid, production-quality architecture with three focused, low-effort fixes remaining |
+| Single Level of Abstraction | 4 | Pages are clean; `ArtistDetailAlbums` and `RecommendForm` still mix levels in child components |
+| Component API Design | 5 | Props are minimal, well-typed, no prop-drilling, no god components |
+| Data Flow Clarity | 5 | Auth/Redux split is clear; `AppDataLoader` bridge is elegant; per-component state is always local |
+| API Abstraction Layer | 5 | All external calls go through `src/api/`; no raw `fetch` in components or hooks |
+| App Layout / Shell | 5 | `AppLayout` composed inside every page; `FormPageShell` now unifies the 4 create/edit pages |
+| Code Duplication | 4 | Previous round removed most duplication; `SettingsForm` shell and auth shell remain |
+| Composition Patterns | 5 | `children` used correctly; `AlbumCardData` polymorphism is clean; `useFetch` primitive reused consistently |
+| **Overall** | **4.7** | Near-production-quality architecture; only minor structural issues remain |

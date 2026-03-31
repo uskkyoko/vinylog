@@ -2,13 +2,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
 import { ReviewDetailCard } from "../../components/ReviewCard/ReviewDetailCard";
 import { PageLoading } from "../../components/PageLoading";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import { useAppDispatch } from "../../hooks/hooks";
 import { deleteReview } from "../../store/reviewsSlice";
 import { useFetch } from "../../hooks/useFetch";
 import { api } from "../../api";
 import { ReviewDetailHeader } from "./ReviewDetailHeader";
-import "../Reviews/Review.css";
+import "../Review.css";
 
 export default function ReviewDetail() {
   const { id } = useParams<{ id: string }>();

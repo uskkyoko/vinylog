@@ -1,4 +1,4 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { useAppSelector } from "./hooks";
 import { usePublicUser } from "./useUser";
 import { api } from "../api";

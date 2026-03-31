@@ -15,6 +15,8 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
+  /** Forwarded to the underlying <button> for icon-only buttons without visible text. */
+  "aria-label"?: string;
   children: ReactNode;
 }
 
@@ -33,11 +35,12 @@ export function Button({
   onClick,
   disabled,
   className,
+  "aria-label": ariaLabel,
   children,
 }: ButtonProps) {
   const combined = [cls(variant, size), className].filter(Boolean).join(" ");
   return (
-    <button className={combined} type={type} onClick={onClick} disabled={disabled}>
+    <button className={combined} type={type} onClick={onClick} disabled={disabled} aria-label={ariaLabel}>
       {children}
     </button>
   );

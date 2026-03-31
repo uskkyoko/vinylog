@@ -1,5 +1,14 @@
+/**
+ * Profile section showing the user's lists.
+ *
+ * Receives lists from the Profile page, which merges data from two sources:
+ *   - isOwner: lists come from Redux (state.lists.items)
+ *   - public profile: lists come from the API response via useProfileData()
+ *
+ * No local state; rendering only.
+ */
 import { ButtonLink } from "../../components/Button";
-import { AlbumPreviews } from "../Lists/ListCard";
+import { ProfileListCard } from "./ProfileListCard";
 import type { ListOut } from "../../types";
 
 export function ProfileLists({
@@ -32,22 +41,5 @@ export function ProfileLists({
         )}
       </div>
     </section>
-  );
-}
-
-function ProfileListCard({ list }: { list: ListOut }) {
-  return (
-    <article className="profile-lists__card">
-      <div>
-        <p className="profile-lists__title">{list.name}</p>
-        {list.description && (
-          <p className="profile-lists__meta">{list.description}</p>
-        )}
-        <AlbumPreviews albums={list.albums} />
-      </div>
-      <ButtonLink to={`/lists/${list.id}`} variant="ghost" size="sm">
-        View
-      </ButtonLink>
-    </article>
   );
 }

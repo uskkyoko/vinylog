@@ -9,6 +9,7 @@ import Reviews from "./pages/Reviews/Reviews";
 import Settings from "./pages/Settings/Settings";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
+import GoogleCallback from "./pages/Auth/GoogleCallback";
 import AlbumDetail from "./pages/AlbumDetail/AlbumDetail";
 import ArtistDetail from "./pages/ArtistDetail/ArtistDetail";
 import ReviewDetail from "./pages/ReviewDetail/ReviewDetail";
@@ -20,7 +21,10 @@ import EditList from "./pages/Lists/EditList";
 import ListDetail from "./pages/Lists/ListDetail";
 import Recommend from "./pages/Recommend/Recommend";
 import About from "./pages/About/About";
-import { useAuth } from "./context/AuthContext";
+import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService/TermsOfService";
+import Contact from "./pages/Contact/Contact";
+import { useAuth } from "./context/useAuth";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -60,6 +64,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/auth/google/callback" element={<GoogleCallback />} />
         <Route
           path="/"
           element={
@@ -141,6 +146,9 @@ export default function App() {
           }
         />
         <Route path="/about" element={<About />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </ErrorBoundary>
   );

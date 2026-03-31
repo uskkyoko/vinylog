@@ -1,0 +1,51 @@
+/**
+ * Shared shell for all single-form pages (CreateReview, EditReview,
+ * CreateList, EditList). Replaces the duplicated .review-form--page and
+ * .list-form-page layout wrappers.
+ */
+
+.form-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  min-height: calc(100vh - 160px);
+}
+
+.form-page__card {
+  width: min(680px, 95%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.form-page__header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-page__title {
+  margin: 0.3rem 0 0;
+}
+
+@media (max-width: 768px) {
+  .form-page {
+    padding: 1.5rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-page {
+    padding: 1rem 0;
+  }
+
+  .form-page__card {
+    padding: 1.25rem;
+  }
+
+  .form-page__header h1 {
+    font-size: 1.5rem;
+  }
+}

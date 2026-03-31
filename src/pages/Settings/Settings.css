@@ -1,28 +1,10 @@
-.settings {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 0;
-  min-height: calc(100vh - 160px);
-}
-
-.settings__card {
-  width: min(720px, 95%);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 1.5rem;
-  padding: 2.75rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-}
-
-.settings__header {
-  text-align: center;
-  margin-bottom: 1.75rem;
-}
-
-.settings__title {
-  margin: 0.3rem 0 0;
-}
+/**
+ * Settings page styles.
+ *
+ * Shell rules (.settings, .settings__card, .settings__header, .settings__title)
+ * were removed — that layout is now handled by FormPageShell.
+ * Only form-content rules remain here.
+ */
 
 .settings__form {
   display: flex;
@@ -117,10 +99,6 @@
 }
 
 @media (max-width: 768px) {
-  .settings {
-    padding: 2rem 0;
-  }
-
   .settings__actions {
     flex-direction: column;
   }
@@ -128,15 +106,5 @@
   .settings__actions .btn {
     width: 100%;
     margin-bottom: 0.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .settings {
-    padding: 1.5rem 0;
-  }
-
-  .settings__card {
-    padding: 1.25rem;
   }
 }

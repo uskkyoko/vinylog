@@ -50,6 +50,12 @@ export interface TrendingAlbumOut {
   release_date: string;
 }
 
+/** Response shape from /albums/trending */
+export interface TrendingAlbumsResponse {
+  popular: TrendingAlbumOut[];
+  new_releases: TrendingAlbumOut[];
+}
+
 /** Response from /albums/spotify/{spotify_id} — resolves or creates an album and returns its DB id */
 export interface SpotifyAlbumLookup {
   id: number;

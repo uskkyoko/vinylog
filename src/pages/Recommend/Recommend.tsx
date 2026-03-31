@@ -3,7 +3,7 @@ import type { RecommendResponse } from "../../types";
 import { AppLayout } from "../../components/AppLayout";
 import { RecommendForm } from "./RecommendForm";
 import { RecommendResult } from "./RecommendResult";
-import "./Recommend.css";
+import "../Recommend.css";
 
 export default function Recommend() {
   const [result, setResult] = useState<RecommendResponse | null>(null);

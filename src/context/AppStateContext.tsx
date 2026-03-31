@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./useAuth";
 import { useAppDispatch } from "../hooks/hooks";
 import { fetchMyLists } from "../store/listsSlice";
 import { fetchReviews } from "../store/reviewsSlice";

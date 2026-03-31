@@ -1,5 +1,5 @@
 import { ButtonLink } from "../../components/Button";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 export function HomeRecommend() {
   const { user } = useAuth();

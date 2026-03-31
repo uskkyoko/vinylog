@@ -1,0 +1,118 @@
+.contact-page {
+  padding: var(--space-8) 0;
+}
+
+.contact-page .container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.contact-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.contact-page__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.contact-page__subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  max-width: 60ch;
+  margin: 0;
+}
+
+.contact-page__content {
+  width: 100%;
+}
+
+.contact-page__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .contact-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-page__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.contact-page__info-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.contact-page__info-card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.contact-page__info-card p {
+  color: var(--color-text-muted);
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.contact-page__email a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.contact-page__form-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.contact-page__form-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.contact-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.contact-page__success {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+.contact-page__success-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.contact-page__success p {
+  color: var(--color-text-muted);
+}

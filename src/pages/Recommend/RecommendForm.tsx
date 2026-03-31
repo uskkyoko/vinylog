@@ -1,8 +1,23 @@
+/**
+ * AI Recommendation form.
+ *
+ * State:
+ *   userInput  — the mood description the user types (or empty for auto)
+ *   loading    — true while the API request is in flight
+ *   error      — last error message, cleared on each new submission
+ *   messageIndex — cycles through LOADING_MESSAGES every 3s during loading
+ *
+ * Data flow: on submit → api.generateRecommendation() → calls onResult(result)
+ * so the parent (Recommend page) can replace this form with RecommendResult.
+ * The rotating message state stays here because it's tied to the loading cycle;
+ * only the visual structure is delegated to RecommendLoadingOverlay.
+ */
 import { useState, useEffect, useRef } from "react";
 import type { RecommendResponse } from "../../types";
 import { api } from "../../api";
 import { Button } from "../../components/Button";
 import { FormField } from "../../components/FormField";
+import { RecommendLoadingOverlay } from "./RecommendLoadingOverlay";
 
 const LOADING_MESSAGES = [
   "Tuning the AI...",
@@ -57,20 +72,8 @@ export function RecommendForm({ onResult }: RecommendFormProps) {
 
   return (
     <>
-      {loading && (
-        <div className="recommend-loading">
-          <div className="recommend-loading__overlay" />
-          <div className="recommend-loading__content">
-            <div className="recommend-loading__spinner">
-              <div className="recommend-loading__spinner-ring" />
-              <div className="recommend-loading__spinner-ring" />
-              <div className="recommend-loading__spinner-ring" />
-            </div>
-            <h2 className="recommend-loading__title">Finding your next favourite album…</h2>
-            <p className="recommend-loading__text">{LOADING_MESSAGES[messageIndex]}</p>
-          </div>
-        </div>
-      )}
+      {/** Overlay mounts on top of the form; form stays mounted so state survives a failed request. */}
+      {loading && <RecommendLoadingOverlay message={LOADING_MESSAGES[messageIndex]} />}
 
       <div>
         <h1 className="recommend__title">AI Recommendation</h1>

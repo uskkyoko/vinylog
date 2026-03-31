@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import { saveFavouriteAlbums } from "../../store/usersSlice";
 import { Button } from "../../components/Button";
@@ -77,15 +77,13 @@ export function SettingsForm({ user }: { user: UserOut }) {
     navigate("/profile");
   }
 
+  /**
+   * Renders only the form fields and submission logic.
+   * The page shell (section, card, eyebrow, title) is owned by Settings.tsx
+   * via FormPageShell — keeping SettingsForm focused on a single responsibility.
+   */
   return (
-    <section className="settings settings--page">
-      <div className="settings__card">
-        <div className="settings__header">
-          <p className="eyebrow">Personalize</p>
-          <h1 className="settings__title">User Profile</h1>
-        </div>
-
-        <form className="settings__form" onSubmit={handleSubmit}>
+    <form className="settings__form" onSubmit={handleSubmit}>
           <FormField
             label="Full Name"
             htmlFor="full-name"
@@ -164,8 +162,6 @@ export function SettingsForm({ user }: { user: UserOut }) {
               Log Out
             </Button>
           </div>
-        </form>
-      </div>
-    </section>
+    </form>
   );
 }

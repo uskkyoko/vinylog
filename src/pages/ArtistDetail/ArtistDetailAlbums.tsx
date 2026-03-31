@@ -1,5 +1,12 @@
-import { Link } from "react-router-dom";
+/**
+ * Album grid for the artist detail page.
+ *
+ * Receives the artist's albums and renders them as a grid of ArtistAlbumCards.
+ * Each card is its own component — this component only owns the grid layout
+ * and the empty state.
+ */
 import type { ArtistAlbumSummary } from "../../types";
+import { ArtistAlbumCard } from "./ArtistAlbumCard";
 
 export function ArtistDetailAlbums({
   albums,
@@ -17,34 +24,7 @@ export function ArtistDetailAlbums({
       </div>
       <div className="artist-albums__grid">
         {albums.map((album) => (
-          <Link
-            key={album.id}
-            to={`/albums/${album.spotify_id}`}
-            className="artist-albums__item"
-          >
-            <div className="artist-albums__item-image-wrapper">
-              {album.cover_url ? (
-                <img
-                  src={album.cover_url}
-                  alt={album.title}
-                  className="artist-albums__item-image"
-                />
-              ) : (
-                <div className="artist-albums__item-image artist-albums__item-image--placeholder" />
-              )}
-            </div>
-            <div className="artist-albums__item-info">
-              <p className="artist-albums__item-title">{album.title}</p>
-              <p className="artist-albums__item-year">
-                {album.release_date?.slice(0, 4)}
-              </p>
-              {album.average_rating != null && (
-                <p className="artist-albums__item-rating">
-                  ★ {album.average_rating.toFixed(1)}
-                </p>
-              )}
-            </div>
-          </Link>
+          <ArtistAlbumCard key={album.id} album={album} />
         ))}
       </div>
     </div>

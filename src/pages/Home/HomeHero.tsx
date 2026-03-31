@@ -1,6 +1,6 @@
 import { StatsCard, GuestCard } from "./StatsCard";
 import { ButtonLink } from "../../components/Button";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 export function HomeHero() {
   const { user } = useAuth();

@@ -22,7 +22,8 @@ export default function Albums() {
         <div className="container">
           <AlbumsIntro />
           <AlbumCarousel title="Popular with Friends" albums={feedAlbums} />
-          <AlbumCarousel title="Trending" albums={trendingAlbums} />
+          <AlbumCarousel title="Popular" albums={trendingAlbums.popular} />
+          <AlbumCarousel title="New Releases" albums={trendingAlbums.new_releases} />
           <AlbumCarousel title="Recommended" albums={allAlbums} />
         </div>
       </section>

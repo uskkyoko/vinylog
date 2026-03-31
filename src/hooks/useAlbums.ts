@@ -1,4 +1,4 @@
-import type { AlbumOut, TrendingAlbumOut } from "../types";
+import type { AlbumOut, TrendingAlbumsResponse } from "../types";
 import { api } from "../api";
 import { useFetch } from "./useFetch";
 
@@ -7,7 +7,10 @@ export function useAlbums() {
 }
 
 export function useTrendingAlbums() {
-  return useFetch<TrendingAlbumOut[]>(api.getTrendingAlbums, []);
+  return useFetch<TrendingAlbumsResponse>(api.getTrendingAlbums, {
+    popular: [],
+    new_releases: [],
+  });
 }
 
 export function useFeaturedAlbums() {

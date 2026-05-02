@@ -12,9 +12,9 @@ export function SearchResultItem({
 }) {
   return (
     <div className="list-form-page__search-item">
-      {album.image && (
+      {album.cover_url && (
         <img
-          src={album.image}
+          src={album.cover_url}
           alt={album.title}
           className="list-form-page__search-thumb"
           width={40}

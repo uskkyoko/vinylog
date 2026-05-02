@@ -1,4 +1,5 @@
-import { HomePanel, HomeListItem } from "./HomePanel";
+import { HomePanel } from "./HomePanel";
+import { HomeListItem } from "./HomeListItem";
 import type { AlbumOut, ArtistOut, ListOut } from "../../types";
 
 interface HomePanelsProps {
@@ -19,7 +20,6 @@ export function HomePanels({
           <HomePanel
             eyebrow="Spin Today"
             title="Featured Albums"
-            browseTo="/albums"
             isEmpty={featuredAlbums.length === 0}
             emptyMessage="No albums available yet."
           >
@@ -27,7 +27,7 @@ export function HomePanels({
               <HomeListItem
                 key={album.id}
                 primary={album.title}
-                meta={`${album.artist?.name || "Unknown artist"} · ${album.release_date}`}
+                meta={`${album.artist?.name || "Unknown artist"}`}
                 to={`/albums/${album.spotify_id}`}
               />
             ))}
@@ -52,7 +52,6 @@ export function HomePanels({
           <HomePanel
             eyebrow="Community Curated"
             title="Fresh Lists"
-            browseTo="/lists"
             isEmpty={communityLists.length === 0}
             emptyMessage="No lists have been created yet."
           >

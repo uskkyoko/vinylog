@@ -1,3 +1,5 @@
+import { ButtonLink } from "../../components/Button";
+
 export function ListsIntro() {
   return (
     <header className="lists-page__intro">
@@ -7,6 +9,9 @@ export function ListsIntro() {
         See what collectors are sequencing—curated journeys through genre, mood,
         and moment.
       </p>
+      <ButtonLink to="/lists/new" variant="primary" size="sm">
+        + Create List
+      </ButtonLink>
     </header>
   );
 }

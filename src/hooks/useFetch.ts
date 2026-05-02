@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 export function useFetch<T>(
   fetcher: () => Promise<T>,
   initial: T,
-  dependencies: any[] = [],
+  dependencies: unknown[] = [],
 ) {
   const [data, setData] = useState<T>(initial);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,6 @@ export function useFetch<T>(
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
     fetcher()
       .then((res) => {
         if (isMounted) setData(res);

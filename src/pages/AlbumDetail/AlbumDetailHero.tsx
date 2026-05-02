@@ -1,5 +1,6 @@
 import type { AlbumOut } from "../../types";
 import { ButtonLink } from "../../components/Button";
+import { AddToListButton } from "./AddToListButton";
 
 export function AlbumDetailHero({ album }: { album: AlbumOut }) {
   const releaseYear = album.release_date?.slice(0, 4);
@@ -21,23 +22,25 @@ export function AlbumDetailHero({ album }: { album: AlbumOut }) {
         <p className="eyebrow">{album.artist?.name}</p>
         <h1 className="album-detail__title">{album.title}</h1>
         {releaseYear && <p className="album-detail__year">{releaseYear}</p>}
-        {album.artist && (
+        <div className="album-detail__actions">
           <ButtonLink
-            to={`/artists/${album.artist.id}`}
-            variant="ghost"
+            to={`/reviews/new?album_id=${album.spotify_id}&album_title=${encodeURIComponent(album.title)}&artist=${encodeURIComponent(album.artist?.name ?? "")}&image=${encodeURIComponent(album.cover_url ?? "")}`}
+            variant="primary"
             size="sm"
-            className="album-detail__artist-link"
           >
-            View artist
+            Write a review
           </ButtonLink>
-        )}
-        <ButtonLink
-          to={`/reviews/new?album_id=${album.spotify_id}&album_title=${encodeURIComponent(album.title)}&artist=${encodeURIComponent(album.artist?.name ?? "")}&image=${encodeURIComponent(album.cover_url ?? "")}`}
-          variant="primary"
-          size="sm"
-        >
-          Write a review
-        </ButtonLink>
+          <AddToListButton album={album} />
+          {album.artist && (
+            <ButtonLink
+              to={`/artists/${album.artist.id}`}
+              variant="ghost"
+              size="sm"
+            >
+              View artist
+            </ButtonLink>
+          )}
+        </div>
       </div>
     </div>
   );

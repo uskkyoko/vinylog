@@ -96,13 +96,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "AUTH_SUCCESS", payload: user });
   }
 
-  async function loginWithGoogle(code: string) {
-    const { access_token } = await api.googleCallback(code);
-    setAuthToken(access_token);
-    const user = await api.getMe();
-    dispatch({ type: "AUTH_SUCCESS", payload: user });
-  }
-
   function logout() {
     api.logout().catch(() => {});
     setAuthToken(null);
@@ -125,7 +118,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ...state,
     login,
     signup,
-    loginWithGoogle,
     logout,
     updateCurrentUser,
     followUser,

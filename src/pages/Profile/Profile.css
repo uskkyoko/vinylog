@@ -139,20 +139,23 @@
   border-radius: 1rem;
   padding: 1rem 1.25rem;
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
   background: var(--surface-alt);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.profile-lists__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .profile-lists__title {
   margin: 0;
   font-weight: 600;
-}
-
-.profile-lists__meta {
-  margin: 0.25rem 0 0;
-  color: var(--muted);
-  font-size: 0.9rem;
 }
 
 .profile-lists__link {

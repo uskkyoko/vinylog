@@ -15,7 +15,7 @@ function toFavAlbum(result: AlbumSearchResult): FavAlbum {
     spotify_id: result.id,
     title: result.title,
     artist_name: result.artist_name,
-    cover_url: result.image,
+    cover_url: result.cover_url,
   };
 }
 
@@ -45,6 +45,7 @@ export function SettingsForm({ user }: { user: UserOut }) {
     favouriteAlbums.map(userFavToFavAlbum),
   );
 
+  const [saveError, setSaveError] = useState<string | null>(null);
   const atMax = selectedAlbums.length >= 4;
 
   function addAlbum(result: AlbumSearchResult) {
@@ -59,22 +60,43 @@ export function SettingsForm({ user }: { user: UserOut }) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    let avatarFilename = user.profile_picture;
-    if (avatarFile) {
-      const { profile_picture } = await api.uploadAvatar(avatarFile);
-      avatarFilename = profile_picture;
+    setSaveError(null);
+    try {
+      let avatarFilename = user.profile_picture;
+      if (avatarFile) {
+        const { profile_picture } = await api.uploadAvatar(avatarFile);
+        avatarFilename = profile_picture;
+      }
+      const [updatedUser, albumsAction] = await Promise.all([
+        api.updateUser({
+          full_name: fullName,
+          biography: biography || null,
+          birth_date: birthDate,
+          profile_picture: avatarFilename,
+        }),
+        dispatch(saveFavouriteAlbums(selectedAlbums.map((a) => a.spotify_id))),
+      ]);
+      if (saveFavouriteAlbums.rejected.match(albumsAction)) {
+        setSaveError("Failed to save favourite albums. Please try again.");
+        return;
+      }
+      if (
+        saveFavouriteAlbums.fulfilled.match(albumsAction) &&
+        selectedAlbums.length > 0 &&
+        albumsAction.payload.length === 0
+      ) {
+        setSaveError(
+          "Albums could not be saved — they may not be available in the library yet.",
+        );
+        return;
+      }
+      updateCurrentUser(updatedUser);
+      navigate("/profile");
+    } catch (err) {
+      setSaveError(
+        err instanceof Error ? err.message : "Failed to save changes.",
+      );
     }
-    const [updatedUser] = await Promise.all([
-      api.updateUser({
-        full_name: fullName,
-        biography: biography || null,
-        birth_date: birthDate,
-        profile_picture: avatarFilename,
-      }),
-      dispatch(saveFavouriteAlbums(selectedAlbums.map((a) => a.spotify_id))),
-    ]);
-    updateCurrentUser(updatedUser);
-    navigate("/profile");
   }
 
   /**
@@ -84,84 +106,86 @@ export function SettingsForm({ user }: { user: UserOut }) {
    */
   return (
     <form className="settings__form" onSubmit={handleSubmit}>
-          <FormField
-            label="Full Name"
-            htmlFor="full-name"
-            className="settings__field"
-          >
-            <input
-              className="form-field__input"
-              type="text"
-              id="full-name"
-              name="full_name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </FormField>
+      <FormField
+        label="Full Name"
+        htmlFor="full-name"
+        className="settings__field"
+      >
+        <input
+          className="form-field__input"
+          type="text"
+          id="full-name"
+          name="full_name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          required
+        />
+      </FormField>
 
-          <FormField
-            label="Biography"
-            htmlFor="biography"
-            className="settings__field"
-          >
-            <textarea
-              className="form-field__textarea"
-              id="biography"
-              name="biography"
-              rows={4}
-              placeholder="Tell us about yourself..."
-              value={biography}
-              onChange={(e) => setBiography(e.target.value)}
-            />
-          </FormField>
+      <FormField
+        label="Biography"
+        htmlFor="biography"
+        className="settings__field"
+      >
+        <textarea
+          className="form-field__textarea"
+          id="biography"
+          name="biography"
+          rows={4}
+          placeholder="Tell us about yourself..."
+          value={biography}
+          onChange={(e) => setBiography(e.target.value)}
+        />
+      </FormField>
 
-          <FormField
-            label="Birth Date"
-            htmlFor="birth-date"
-            className="settings__field"
-          >
-            <input
-              className="form-field__input"
-              type="date"
-              id="birth-date"
-              name="birth_date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              required
-            />
-          </FormField>
+      <FormField
+        label="Birth Date"
+        htmlFor="birth-date"
+        className="settings__field"
+      >
+        <input
+          className="form-field__input"
+          type="date"
+          id="birth-date"
+          name="birth_date"
+          value={birthDate}
+          onChange={(e) => setBirthDate(e.target.value)}
+          required
+        />
+      </FormField>
 
-          <AvatarUpload onFileChange={setAvatarFile} />
+      <AvatarUpload onFileChange={setAvatarFile} />
 
-          <FavouriteAlbumsField
-            selected={selectedAlbums}
-            onAdd={addAlbum}
-            onRemove={removeAlbum}
-            atMax={atMax}
-          />
+      <FavouriteAlbumsField
+        selected={selectedAlbums}
+        onAdd={addAlbum}
+        onRemove={removeAlbum}
+        atMax={atMax}
+      />
 
-          <hr className="divider" />
+      <hr className="divider" />
 
-          <div className="settings__actions">
-            <div>
-              <Button type="submit" variant="primary">
-                Save Changes
-              </Button>
-              <Button variant="ghost" onClick={() => navigate("/profile")}>
-                Cancel
-              </Button>
-            </div>
-            <Button
-              variant="danger"
-              onClick={() => {
-                logout();
-                navigate("/login");
-              }}
-            >
-              Log Out
-            </Button>
-          </div>
+      {saveError && <p className="settings__error">{saveError}</p>}
+
+      <div className="settings__actions">
+        <div className="settings__actions--buttons">
+          <Button type="submit" variant="primary">
+            Save Changes
+          </Button>
+          <Button variant="ghost" onClick={() => navigate("/profile")}>
+            Cancel
+          </Button>
+        </div>
+        <Button
+          variant="danger"
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
+        >
+          Log Out
+        </Button>
+      </div>
     </form>
   );
 }

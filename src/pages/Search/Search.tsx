@@ -1,3 +1,4 @@
+import "./Search.css";
 import { useSearchParams } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
@@ -29,7 +30,6 @@ export default function Search() {
       <section className="search-results">
         <div className="container search-results__container">
           <SearchIntro query={query} />
-          {/** Uses the shared error component for consistent styling across the app. */}
           <FormError message={error} />
           {hasResults ? (
             <>

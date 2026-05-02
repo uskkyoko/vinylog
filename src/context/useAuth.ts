@@ -36,7 +36,6 @@ export interface AuthContextValue {
   status: "loading" | "authed" | "anon";
   login: (creds: LoginRequest) => Promise<void>;
   signup: (data: SignupRequest) => Promise<void>;
-  loginWithGoogle: (code: string) => Promise<void>;
   logout: () => void;
   updateCurrentUser: (user: UserOut) => void;
   followUser: (username: string) => Promise<void>;
@@ -50,7 +49,6 @@ export interface AuthContextValue {
  */
 export const AuthContext = createContext<AuthContextValue | null>(null);
 
-/** Typed accessor for AuthContext — throws if used outside AuthProvider. */
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used inside AuthProvider");

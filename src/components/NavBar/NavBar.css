@@ -45,8 +45,8 @@
 }
 
 .navbar__link:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.05);
+  filter: brightness(1.3);
+  transition: all 0.2s ease;
 }
 
 .navbar__link--primary {
@@ -66,6 +66,51 @@
   border-radius: 999px;
   color: var(--text);
   width: 260px;
+}
+
+.navbar__auth {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* "+ Add" dropdown when authed */
+.navbar__auth--desktop.btn {
+  flex-shrink: 0;
+}
+
+.navbar__dropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.navbar__dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 200;
+}
+
+.navbar__dropdown-item {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.navbar__dropdown-item:hover {
+  background: var(--surface-alt);
+  color: var(--accent);
 }
 
 /* Burger Menu Button */
@@ -232,7 +277,8 @@ body.navbar-menu-open {
 
   .navbar__menu--desktop,
   .navbar__search-bar--desktop,
-  .navbar__link--desktop {
+  .navbar__link--desktop,
+  .navbar__auth--desktop {
     display: none !important;
   }
 

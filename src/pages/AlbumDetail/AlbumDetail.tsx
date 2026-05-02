@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./AlbumDetail.css";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
+import { PageNotFound } from "../../components/PageNotFound";
 import { useFetch } from "../../hooks/useFetch";
 import { api } from "../../api";
 import { AlbumDetailHero } from "./AlbumDetailHero";
@@ -19,7 +20,6 @@ export default function AlbumDetail() {
   // If the id looks like a spotify_id (non-numeric), resolve it to a DB id first
   useEffect(() => {
     if (!id || isNumericId(id)) return;
-    setResolveError(false);
     api
       .getAlbumBySpotifyId(id)
       .then(({ id: numericId }) => navigate(`/albums/${numericId}`, { replace: true }))
@@ -50,29 +50,13 @@ export default function AlbumDetail() {
   }, [album?.artist?.id]);
 
   if (resolveError) {
-    return (
-      <AppLayout>
-        <section className="album-detail">
-          <div className="container">
-            <p>Album not found.</p>
-          </div>
-        </section>
-      </AppLayout>
-    );
+    return <PageNotFound section="album-detail" message="Album not found." />;
   }
 
   if (loading || numericId == null) return <PageLoading />;
 
   if (error || !album) {
-    return (
-      <AppLayout>
-        <section className="album-detail">
-          <div className="container">
-            <p>Album not found.</p>
-          </div>
-        </section>
-      </AppLayout>
-    );
+    return <PageNotFound section="album-detail" message="Album not found." />;
   }
 
   return (

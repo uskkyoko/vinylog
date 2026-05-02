@@ -1,9 +1,12 @@
+import { AppLayout } from "./AppLayout";
+import "./PageLoading.css";
+
 export function PageLoading() {
   return (
-    <section className="page-loading">
-      <div className="container">
-        <p>Loading...</p>
+    <AppLayout>
+      <div className="page-loading">
+        <div className="page-loading__spinner" />
       </div>
-    </section>
+    </AppLayout>
   );
 }

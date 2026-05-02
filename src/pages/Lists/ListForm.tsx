@@ -157,7 +157,7 @@ export function ListForm({ list }: Props) {
                           spotify_id: a.id,
                           title: a.title,
                           artist_name: a.artist_name,
-                          cover_url: a.image,
+                          cover_url: a.cover_url,
                         })
                       }
                     />

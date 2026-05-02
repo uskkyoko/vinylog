@@ -1,40 +1,13 @@
-/**
- * Clickable card for a single Spotify artist result.
- *
- * On click, calls api.getSpotifyArtist() to sync the artist into the DB
- * (creates the artist record if it doesn't exist yet), then navigates to
- * the artist detail page using the returned numeric DB id.
- *
- * Loading state prevents double-clicks during the sync request.
- * No state is stored globally — this is a one-shot navigation action.
- */
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "../../components/Button";
-import { api } from "../../api";
+import { useArtistSync } from "../../hooks/useArtistSync";
 import type { SpotifyArtistResult } from "../../types";
 
 export function SearchArtistCard({ artist }: { artist: SpotifyArtistResult }) {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-
-  async function handleClick() {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const result = await api.getSpotifyArtist(artist.spotify_id);
-      const data = result as { id: number };
-      navigate(`/artists/${data.id}`);
-    } catch {
-      setLoading(false);
-    }
-  }
+  const { syncAndNavigate, loading } = useArtistSync();
 
   return (
-    <Button
-      variant="ghost"
+    <button
       className="search-results__artist-card"
-      onClick={handleClick}
+      onClick={() => syncAndNavigate(artist.spotify_id)}
       disabled={loading}
     >
       {artist.image_url ? (
@@ -50,7 +23,7 @@ export function SearchArtistCard({ artist }: { artist: SpotifyArtistResult }) {
           </span>
         </div>
       )}
-      <h3 className="search-results__artist-name">{artist.name}</h3>
-    </Button>
+      <span className="search-results__artist-name">{artist.name}</span>
+    </button>
   );
 }

@@ -9,7 +9,6 @@ import Reviews from "./pages/Reviews/Reviews";
 import Settings from "./pages/Settings/Settings";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
-import GoogleCallback from "./pages/Auth/GoogleCallback";
 import AlbumDetail from "./pages/AlbumDetail/AlbumDetail";
 import ArtistDetail from "./pages/ArtistDetail/ArtistDetail";
 import ReviewDetail from "./pages/ReviewDetail/ReviewDetail";
@@ -20,7 +19,6 @@ import CreateList from "./pages/Lists/CreateList";
 import EditList from "./pages/Lists/EditList";
 import ListDetail from "./pages/Lists/ListDetail";
 import Recommend from "./pages/Recommend/Recommend";
-import About from "./pages/About/About";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import Contact from "./pages/Contact/Contact";
@@ -47,7 +45,7 @@ class ErrorBoundary extends Component<
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { status } = useAuth();
   if (status === "loading") return null;
-  if (status === "anon") return <Navigate to="/login" replace />;
+  if (status === "anon") return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
@@ -64,15 +62,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/auth/google/callback" element={<GoogleCallback />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<Home />} />
         <Route path="/albums" element={<Albums />} />
         <Route path="/albums/:id" element={<AlbumDetail />} />
         <Route path="/artists/:id" element={<ArtistDetail />} />
@@ -145,7 +135,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/about" element={<About />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/contact" element={<Contact />} />

@@ -1,4 +1,5 @@
-import { StatsCard, GuestCard } from "./StatsCard";
+import { StatsCard } from "./StatsCard";
+import { GuestCard } from "./GuestCard";
 import { ButtonLink } from "../../components/Button";
 import { useAuth } from "../../context/useAuth";
 
@@ -16,14 +17,8 @@ export function HomeHero() {
           </p>
 
           <div className="home-hero__actions">
-            <ButtonLink variant="ghost" to="/albums">
-              Browse albums
-            </ButtonLink>
-            <ButtonLink variant="ghost" to="/lists">
-              Dig lists
-            </ButtonLink>
             {user && (
-              <ButtonLink variant="ai" to="/recommend">
+              <ButtonLink variant="primary" to="/recommend">
                 AI recommend
               </ButtonLink>
             )}

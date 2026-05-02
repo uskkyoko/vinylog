@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import "./ArtistDetail.css";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
+import { PageNotFound } from "../../components/PageNotFound";
 import { useArtistDetail } from "../../hooks/useArtistDetail";
 import { ArtistDetailHero } from "./ArtistDetailHero";
 import { ArtistDetailAlbums } from "./ArtistDetailAlbums";
@@ -16,13 +17,11 @@ export default function ArtistDetail() {
 
   if (error || !artist) {
     return (
-      <AppLayout>
-        <section className="artist-details">
-          <div className="artist-details__container">
-            <p>Artist not found.</p>
-          </div>
-        </section>
-      </AppLayout>
+      <PageNotFound
+        section="artist-details"
+        containerClass="artist-details__container"
+        message="Artist not found."
+      />
     );
   }
 

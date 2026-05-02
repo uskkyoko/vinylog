@@ -17,7 +17,7 @@ export function SearchArtistsSection({
   if (artists.length === 0) return null;
 
   return (
-    <SearchResultsSection title="Artists">
+    <SearchResultsSection title="Artists" gridClass="search-grid--circles">
       {artists.map((artist) => (
         <SearchArtistCard key={artist.spotify_id} artist={artist} />
       ))}

@@ -17,7 +17,7 @@ export const usersApi = {
   uploadAvatar: (file: File): Promise<{ profile_picture: string }> => {
     const form = new FormData();
     form.append("profile_picture", file);
-    return mutateFormData("/users/me/avatar/", form);
+    return mutateFormData("/users/me/avatar", form);
   },
 
   followUser: (username: string): Promise<void> =>

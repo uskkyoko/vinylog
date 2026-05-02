@@ -1,6 +1,8 @@
+import "./AlbumPickerField.css";
 import { useState } from "react";
 import { useAlbumSearch } from "../../hooks/useAlbumSearch";
 import { Button } from "../Button";
+import { AlbumPickerResultItem } from "./AlbumPickerResultItem";
 import type { AlbumSearchResult } from "../../types";
 
 interface Props {
@@ -20,11 +22,10 @@ export function AlbumPickerField({ value, onChange }: Props) {
   if (value) {
     return (
       <div className="album-picker__selected">
-        {value.image && (
+        {value.cover_url && (
           <img
-            src={value.image}
+            src={value.cover_url}
             alt={value.title}
-            width={48}
             className="album-picker__thumb"
           />
         )}
@@ -51,21 +52,11 @@ export function AlbumPickerField({ value, onChange }: Props) {
       {query && results.length > 0 && (
         <div className="album-picker__results">
           {results.map((result) => (
-            <div key={result.id} className="album-picker__item">
-              {result.image && (
-                <img src={result.image} width={40} alt={result.title} />
-              )}
-              <span className="album-picker__item-title">
-                {result.title} — {result.artist_name}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => selectAlbum(result)}
-              >
-                Select
-              </Button>
-            </div>
+            <AlbumPickerResultItem
+              key={result.id}
+              album={result}
+              onSelect={selectAlbum}
+            />
           ))}
         </div>
       )}

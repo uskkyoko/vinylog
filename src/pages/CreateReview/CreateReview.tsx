@@ -14,7 +14,6 @@ import "../Review.css";
 export default function CreateReview() {
   const [searchParams] = useSearchParams();
 
-  /** Support pre-filling from album detail: /reviews/new?album_id=...&album_title=...&artist=...&image=... */
   const prefillId = searchParams.get("album_id");
   const prefillTitle = searchParams.get("album_title");
   const prefillArtist = searchParams.get("artist");
@@ -26,7 +25,7 @@ export default function CreateReview() {
           id: prefillId,
           title: prefillTitle,
           artist_name: prefillArtist,
-          image: prefillImage,
+          cover_url: prefillImage,
         }
       : undefined;
 

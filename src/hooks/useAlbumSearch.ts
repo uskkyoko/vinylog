@@ -7,13 +7,12 @@ export function useAlbumSearch(query: string) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!query) {
-      setResults([]);
-      return;
-    }
-    setError(null);
-    api.searchAlbums(query).then(setResults).catch(setError);
+    if (!query) return;
+    api
+      .searchAlbums(query)
+      .then((data) => setResults(data))
+      .catch((err: Error) => setError(err));
   }, [query]);
 
-  return { results, error };
+  return { results: query ? results : [], error };
 }

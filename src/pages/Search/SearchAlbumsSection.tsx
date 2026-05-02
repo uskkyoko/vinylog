@@ -1,27 +1,6 @@
-import { Link } from "react-router-dom";
 import type { SpotifyAlbumResult } from "../../types";
 import { SearchResultsSection } from "./SearchResultsSection";
-
-function SearchAlbumCard({ album }: { album: SpotifyAlbumResult }) {
-  return (
-    <Link
-      to={`/albums/${album.spotify_id}`}
-      className="card-album"
-    >
-      <div className="card-album__image-wrapper">
-        <img
-          src={album.cover_url ?? ""}
-          alt={album.title}
-          className="card-album__image"
-        />
-      </div>
-      <div className="card-album__info">
-        <h3 className="card-album__title">{album.title}</h3>
-        <p className="card-album__artist">{album.artist_name}</p>
-      </div>
-    </Link>
-  );
-}
+import { AlbumCard } from "../../components/AlbumCard";
 
 export function SearchAlbumsSection({
   albums,
@@ -30,9 +9,9 @@ export function SearchAlbumsSection({
 }) {
   if (albums.length === 0) return null;
   return (
-    <SearchResultsSection title="Albums">
+    <SearchResultsSection title="Albums" gridClass="search-grid--albums">
       {albums.map((album) => (
-        <SearchAlbumCard key={album.spotify_id} album={album} />
+        <AlbumCard key={album.spotify_id} album={album} />
       ))}
     </SearchResultsSection>
   );

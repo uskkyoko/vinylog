@@ -5,11 +5,15 @@ import type { ListOut } from "../../types";
 export function ListDetailHeader({
   list,
   isOwner,
+  canEditDelete,
   onDelete,
+  onAddAlbum,
 }: {
   list: ListOut;
   isOwner: boolean;
+  canEditDelete: boolean;
   onDelete: () => void;
+  onAddAlbum: () => void;
 }) {
   return (
     <header className="list-details__header">
@@ -51,12 +55,19 @@ export function ListDetailHeader({
       </div>
       {isOwner && (
         <div className="list-details__actions">
-          <ButtonLink to={`/lists/${list.id}/edit`} variant="ghost" size="sm">
-            Edit List
-          </ButtonLink>
-          <Button variant="danger" size="sm" onClick={onDelete}>
-            Delete List
+          <Button variant="primary" size="sm" onClick={onAddAlbum}>
+            + Add Album
           </Button>
+          {canEditDelete && (
+            <>
+              <ButtonLink to={`/lists/${list.id}/edit`} variant="ghost" size="sm">
+                Edit
+              </ButtonLink>
+              <Button variant="danger" size="sm" onClick={onDelete}>
+                Delete
+              </Button>
+            </>
+          )}
         </div>
       )}
     </header>

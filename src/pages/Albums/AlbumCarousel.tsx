@@ -18,6 +18,8 @@ export function AlbumCarousel({
     viewportRef.current.scrollBy({ left: amount, behavior: "smooth" });
   }
 
+  if (albums.length === 0) return null;
+
   return (
     <div className="albums-page__section">
       <div className="albums-page__section-header">

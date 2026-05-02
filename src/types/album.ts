@@ -11,7 +11,7 @@ export interface AlbumSearchResult {
   id: string;
   title: string;
   artist_name: string;
-  image: string | null;
+  cover_url: string | null;
 }
 
 export interface AlbumCreate {
@@ -73,4 +73,5 @@ export interface AlbumCardData {
   artist?: ArtistOut | null;
   artist_name?: string | null;
   cover_url: string | null;
+  release_date?: string | null;
 }

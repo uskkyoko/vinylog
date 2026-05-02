@@ -2,11 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 import { useAuth } from "../../context/useAuth";
-import { api } from "../../api";
 import { Button } from "../../components/Button";
 import { FormField } from "../../components/FormField";
 import { FormError } from "../../components/FormError";
-import { GoogleIcon } from "./GoogleIcon";
 import { AuthShell } from "./AuthShell";
 
 export default function Signup() {
@@ -14,11 +12,6 @@ export default function Signup() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  async function handleGoogleLogin() {
-    const { auth_url } = await api.getGoogleAuthUrl();
-    window.location.href = auth_url;
-  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,11 +36,6 @@ export default function Signup() {
 
   return (
     <AuthShell eyebrow="Join Vinylog" title="Sign Up">
-      <Button variant="ghost" className="auth__google" onClick={handleGoogleLogin}>
-        <GoogleIcon />
-        Continue with Google
-      </Button>
-      <div className="auth__divider">or</div>
       <form className="auth__form" onSubmit={handleSubmit}>
         <FormField label="Full Name" htmlFor="full_name">
           <input

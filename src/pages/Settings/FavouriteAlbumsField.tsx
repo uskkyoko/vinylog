@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAlbumSearch } from "../../hooks/useAlbumSearch";
 import { Button } from "../../components/Button";
+import { FavouriteAlbumResultItem } from "./FavouriteAlbumResultItem";
 import type { AlbumSearchResult } from "../../types";
 
 const MAX_FAVOURITES = 4;
@@ -55,17 +56,11 @@ export function FavouriteAlbumsField({ selected, onAdd, onRemove, atMax }: Props
       {searchQuery && searchResults.length > 0 && (
         <div className="settings__results">
           {searchResults.map((result) => (
-            <div key={result.id} className="settings__search-item">
-              {result.image && (
-                <img src={result.image} width={50} alt={result.title} />
-              )}
-              <span className="settings__search-text">
-                {result.title} — {result.artist_name}
-              </span>
-              <Button variant="ghost" size="sm" onClick={() => onAdd(result)}>
-                Add
-              </Button>
-            </div>
+            <FavouriteAlbumResultItem
+              key={result.id}
+              album={result}
+              onAdd={onAdd}
+            />
           ))}
         </div>
       )}

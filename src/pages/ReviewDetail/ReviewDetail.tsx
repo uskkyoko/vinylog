@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
-import { ReviewDetailCard } from "../../components/ReviewCard/ReviewDetailCard";
 import { PageLoading } from "../../components/PageLoading";
+import { PageNotFound } from "../../components/PageNotFound";
+import { ReviewDetailCard } from "../../components/ReviewCard/ReviewDetailCard";
 import { useAuth } from "../../context/useAuth";
 import { useAppDispatch } from "../../hooks/hooks";
+import { useReviewDetail } from "../../hooks/useReviewDetail";
 import { deleteReview } from "../../store/reviewsSlice";
-import { useFetch } from "../../hooks/useFetch";
-import { api } from "../../api";
 import { ReviewDetailHeader } from "./ReviewDetailHeader";
 import "../Review.css";
 
@@ -17,11 +17,7 @@ export default function ReviewDetail() {
   const dispatch = useAppDispatch();
 
   const reviewId = Number(id);
-  const {
-    data: review,
-    loading,
-    error,
-  } = useFetch(() => api.getReview(reviewId), null, [reviewId]);
+  const { data: review, loading, error } = useReviewDetail(reviewId);
 
   async function handleDelete() {
     await dispatch(deleteReview(reviewId));
@@ -30,15 +26,7 @@ export default function ReviewDetail() {
 
   if (loading) return <PageLoading />;
   if (error || !review) {
-    return (
-      <AppLayout>
-        <section className="review-detail">
-          <div className="container">
-            <p>Review not found.</p>
-          </div>
-        </section>
-      </AppLayout>
-    );
+    return <PageNotFound section="review-detail" message="Review not found." />;
   }
 
   const isOwner = user?.id === review.user?.id;

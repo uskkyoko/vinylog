@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import "./Profile.css";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
+import { PageNotFound } from "../../components/PageNotFound";
 import { useAuth } from "../../context/useAuth";
 import { useProfileData } from "../../hooks/useProfileData";
 import { ProfileHeader } from "./ProfileHeader";
@@ -38,15 +39,7 @@ export default function Profile() {
   if (isOwner && !currentUser) return null;
   if (!isOwner && loading) return <PageLoading />;
   if (!isOwner && (error || !profileUser)) {
-    return (
-      <AppLayout>
-        <section className="profile">
-          <div className="container">
-            <p>User not found.</p>
-          </div>
-        </section>
-      </AppLayout>
-    );
+    return <PageNotFound section="profile" message="User not found." />;
   }
 
   return (

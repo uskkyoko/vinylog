@@ -1,6 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { ButtonLink } from "../Button";
+import { BurgerButton } from "./BurgerButton";
+import { MobileMenu } from "./MobileMenu";
 
 function AuthedNavLinks() {
   return (
@@ -79,6 +82,17 @@ function SearchBar({ className }: { className?: string }) {
 export default function NavBar() {
   const { status } = useAuth();
   const isAuthed = status === "authed";
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.classList.toggle("navbar-menu-open", isOpen);
+    return () => document.body.classList.remove("navbar-menu-open");
+  }, [isOpen]);
 
   return (
     <nav className="navbar">
@@ -96,7 +110,7 @@ export default function NavBar() {
         {isAuthed ? (
           <Link
             to="/reviews/new"
-            className="navbar__link navbar__link--primary"
+            className="navbar__link navbar__link--primary navbar__link--desktop"
           >
             Add review
           </Link>
@@ -110,7 +124,11 @@ export default function NavBar() {
             </ButtonLink>
           </div>
         )}
+
+        <BurgerButton isOpen={isOpen} onToggle={() => setIsOpen((o) => !o)} />
       </div>
+
+      <MobileMenu isOpen={isOpen} isAuthed={isAuthed} />
     </nav>
   );
 }

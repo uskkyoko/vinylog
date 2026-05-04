@@ -1,15 +1,13 @@
 import { useMemo } from "react";
 import { ButtonLink } from "../../components/Button";
-import { ReviewCard } from "../../components/ReviewCard/ReviewCard";
+import { ProfileReviewCard } from "./ProfileReviewCard";
 import type { ReviewOut } from "../../types";
 
 export function ProfileReviews({
   reviews,
-  username,
   isOwner = true,
 }: {
   reviews: ReviewOut[];
-  username: string;
   isOwner?: boolean;
 }) {
   const displayedReviews = useMemo(
@@ -33,11 +31,7 @@ export function ProfileReviews({
       <div className="profile-reviews">
         {displayedReviews.length > 0 ? (
           displayedReviews.map((review) => (
-            <ReviewCard
-              key={review.id}
-              review={review}
-              username={username}
-            />
+            <ProfileReviewCard key={review.id} review={review} />
           ))
         ) : (
           <div className="profile-reviews__empty">

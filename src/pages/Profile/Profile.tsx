@@ -56,11 +56,7 @@ export default function Profile() {
           />
           <div className="profile__sections">
             <ProfileLists lists={lists} isOwner={isOwner} />
-            <ProfileReviews
-              reviews={reviews}
-              username={profileUser!.username}
-              isOwner={isOwner}
-            />
+            <ProfileReviews reviews={reviews} isOwner={isOwner} />
           </div>
         </div>
       </section>

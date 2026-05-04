@@ -1,8 +1,10 @@
 import type { AlbumOut } from "../../types";
 import { ButtonLink } from "../../components/Button";
 import { AddToListButton } from "./AddToListButton";
+import { useAuth } from "../../context/useAuth";
 
 export function AlbumDetailHero({ album }: { album: AlbumOut }) {
+  const { user } = useAuth();
   const releaseYear = album.release_date?.slice(0, 4);
 
   return (
@@ -23,13 +25,15 @@ export function AlbumDetailHero({ album }: { album: AlbumOut }) {
         <h1 className="album-detail__title">{album.title}</h1>
         {releaseYear && <p className="album-detail__year">{releaseYear}</p>}
         <div className="album-detail__actions">
-          <ButtonLink
-            to={`/reviews/new?album_id=${album.spotify_id}&album_title=${encodeURIComponent(album.title)}&artist=${encodeURIComponent(album.artist?.name ?? "")}&image=${encodeURIComponent(album.cover_url ?? "")}`}
-            variant="primary"
-            size="sm"
-          >
-            Write a review
-          </ButtonLink>
+          {user && (
+            <ButtonLink
+              to={`/reviews/new?album_id=${album.spotify_id}&album_title=${encodeURIComponent(album.title)}&artist=${encodeURIComponent(album.artist?.name ?? "")}&image=${encodeURIComponent(album.cover_url ?? "")}`}
+              variant="primary"
+              size="sm"
+            >
+              Write a review
+            </ButtonLink>
+          )}
           <AddToListButton album={album} />
           {album.artist && (
             <ButtonLink

@@ -1,5 +1,5 @@
 .album-detail {
-  padding: 2rem 0 4rem;
+  padding: 2rem 0 3rem;
 }
 
 /* ── Hero ────────────────────────────────────────── */
@@ -8,7 +8,7 @@
   display: flex;
   gap: 2rem;
   align-items: flex-start;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .album-detail__cover-wrap {
@@ -60,7 +60,7 @@
 /* ── Spotify embed ───────────────────────────────── */
 
 .album-detail__spotify {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   border-radius: 1rem;
   overflow: hidden;
   border: 1px solid var(--border);
@@ -156,16 +156,22 @@
 
 /* ── Responsive ──────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .album-detail {
+    padding: 1.5rem 0 2.5rem;
+  }
+
   .album-detail__hero {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
   }
 
   .album-detail__cover {
-    width: 180px;
-    height: 180px;
+    width: 200px;
+    height: 200px;
   }
 
   .album-detail__info {
@@ -175,5 +181,29 @@
 
   .album-detail__actions {
     justify-content: center;
+    margin-top: 0.75rem;
+  }
+
+  .album-detail__spotify {
+    margin-bottom: 1.5rem;
+  }
+
+  .album-detail__reviews {
+    padding-top: 1.5rem;
+  }
+
+  .album-detail__reviews-title {
+    margin: 0 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .album-detail {
+    padding: 1rem 0 2rem;
+  }
+
+  .album-detail__cover {
+    width: 180px;
+    height: 180px;
   }
 }

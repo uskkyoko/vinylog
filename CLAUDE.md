@@ -19,7 +19,8 @@ This repo is the **React + TypeScript frontend** (Vite) that talks to a FastAPI 
 
 ```bash
 npm run dev          # start Vite dev server (proxies /api/* to vinylog.onrender.com)
-npm run build        # type-check + production build
+npm run build        # type-check + production build → dist/
+npm run preview      # serve the production build locally (after npm run build)
 npm run lint         # ESLint
 npm run typecheck    # tsc without emit
 npm run test         # Vitest once
@@ -39,6 +40,7 @@ Two separate layers — chosen to keep identity concerns out of Redux and avoid 
 **`AuthContext`** (`src/context/AuthContext.tsx`) — identity only, backed by `useReducer`
 - Owns: current user object, auth token, login/signup/logout, follow/unfollow
 - `status: 'loading' | 'authed' | 'anon'`
+- **Import the hook from `src/context/useAuth.ts`**, not `AuthContext.tsx` — the hook and context object live there so react-refresh can HMR the provider without breaking the context reference. Always: `import { useAuth } from "../../context/useAuth"`
 
 **Redux Toolkit** (`src/store.ts` + `src/store/`) — current user's *mutable* data
 - Owns: the user's lists, reviews, favourite albums — data that must survive navigation and update reactively
@@ -137,7 +139,7 @@ All types are re-exported from `src/types/index.ts`.
 ```
 src/
 ├── api/              One file per domain + http.ts primitives
-├── context/          AuthContext.tsx, AppStateContext.tsx (AppDataLoader)
+├── context/          AuthContext.tsx (provider), useAuth.ts (hook + context), AppStateContext.tsx (AppDataLoader)
 ├── hooks/            useFetch.ts (primitive), domain hooks, hooks.ts (typed Redux)
 ├── store/            listsSlice.ts, reviewsSlice.ts, usersSlice.ts
 ├── store.ts          configureStore + RootState + AppDispatch exports
@@ -265,6 +267,32 @@ npm run verify   # typecheck + lint + test must all pass
 - **All pages** → compose `<AppLayout>` themselves (never at router level)
 - **CSS** → co-located `.css` file per page/component; global base in `src/index.css`
 - **One component per file** — co-located sub-components go in their own file, even if small
+
+## Routes
+
+| Page | Route | Auth required |
+|---|---|---|
+| Home | `/` | Yes |
+| Albums | `/albums` | No |
+| Album detail | `/albums/:id` | No |
+| Artist detail | `/artists/:id` | No |
+| Search | `/search` | No |
+| Lists | `/lists` | No |
+| List detail | `/lists/:id` | No |
+| Create / Edit list | `/lists/new`, `/lists/:id/edit` | Yes |
+| Reviews | `/reviews` | Yes |
+| Review detail | `/reviews/:id` | Yes |
+| Create / Edit review | `/reviews/new`, `/reviews/:id/edit` | Yes |
+| AI Recommend | `/recommend` | Yes |
+| Profile | `/profile/:username` | No |
+| Settings | `/settings` | Yes |
+| About | `/about` | No |
+
+## Deployment
+
+`vercel.json` is checked in and proxies `/api/:path*` → `https://vinylog.onrender.com/:path*` in production, replicating the Vite dev proxy. Vercel handles SPA routing automatically (no separate fallback rule needed). Build command: `npm run build`, publish directory: `dist`.
+
+All API calls in `src/api/http.ts` use relative `/api${path}` URLs — this works in both dev (Vite proxy) and production (Vercel rewrite). Do not change these to absolute URLs.
 
 ## Testing
 

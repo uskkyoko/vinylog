@@ -43,9 +43,9 @@ The dev server proxies `/api/*` requests to the backend automatically.
 
 | Layer | Technology |
 |---|---|
-| Framework | React 18 + Vite |
+| Framework | React 19 + Vite |
 | Language | TypeScript |
-| Routing | React Router DOM v6 |
+| Routing | React Router DOM v7 |
 | Global state | Redux Toolkit |
 | Auth state | React Context + `useReducer` |
 | Styling | CSS3, component-scoped files |
@@ -77,11 +77,16 @@ Protected routes are wrapped in `<ProtectedRoute>`, which redirects unauthentica
 
 ---
 
+## Deployment
+
+The frontend is configured for **Vercel**. `vercel.json` proxies `/api/:path*` to `https://vinylog.onrender.com/:path*`, mirroring the local dev proxy. Connect the repo to Vercel, set build command `npm run build` and publish directory `dist` — no other configuration needed.
+
 ## Commands
 
 ```bash
 npm run dev          # Vite dev server
-npm run build        # Type-check + production build
+npm run build        # Type-check + production build → dist/
+npm run preview      # Serve the production build locally
 npm run typecheck    # tsc without emit
 npm run lint         # ESLint
 npm run test         # Vitest (single run)

@@ -70,9 +70,10 @@
   cursor: pointer;
 }
 
-/* Carousel-specific sizing for album cards */
+/* Carousel-specific sizing for album cards — fixed width keeps every card identical */
 .albums-carousel__track .album-card {
-  flex: 0 0 calc(25% - 0.75rem);
+  flex: 0 0 220px;
+  width: 220px;
 }
 
 /* Album Details */
@@ -160,13 +161,15 @@
 
 @media (max-width: 1200px) {
   .albums-carousel__track .album-card {
-    flex: 0 0 calc(33.333% - 0.67rem);
+    flex: 0 0 200px;
+    width: 200px;
   }
 }
 
 @media (max-width: 1024px) {
   .albums-carousel__track .album-card {
-    flex: 0 0 calc(50% - 0.75rem);
+    flex: 0 0 180px;
+    width: 180px;
   }
 
   .albums-page__section-header {
@@ -201,8 +204,8 @@
   }
 
   .albums-carousel__track .album-card {
-    flex: 0 0 calc(50% - 0.5rem);
-    min-width: calc(50% - 0.5rem);
+    flex: 0 0 160px;
+    width: 160px;
   }
 
   .album-details {
@@ -232,9 +235,8 @@
 
 @media (max-width: 480px) {
   .albums-carousel__track .album-card {
-    flex: 0 0 calc(33.333% - 0.53rem);
-    min-width: calc(33.333% - 0.53rem);
-    padding: 0.75rem;
+    flex: 0 0 130px;
+    width: 130px;
   }
 
   .albums-carousel__track {

@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router-dom";
 import { ButtonLink } from "../Button";
 
@@ -15,7 +16,7 @@ export function MobileMenu({ isOpen, isAuthed }: Props) {
     if (q) navigate(`/search?q=${encodeURIComponent(q)}`);
   }
 
-  return (
+  return createPortal(
     <div className={`navbar__mobile-menu${isOpen ? " navbar__mobile-menu--active" : ""}`}>
       <form className="navbar__search-bar" onSubmit={handleSearch}>
         <input
@@ -68,6 +69,7 @@ export function MobileMenu({ isOpen, isAuthed }: Props) {
           <ButtonLink to="/signup" variant="primary" size="sm">Sign Up</ButtonLink>
         </div>
       )}
-    </div>
+    </div>,
+    document.body,
   );
 }

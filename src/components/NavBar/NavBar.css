@@ -175,7 +175,15 @@
 .navbar__mobile-menu {
   display: none;
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   z-index: 1000;
   padding: 5rem 2rem 2.5rem;
@@ -187,6 +195,7 @@
   pointer-events: none;
   flex-direction: column;
   gap: 1.75rem;
+  box-sizing: border-box;
 }
 
 .navbar__mobile-menu--active {

@@ -6,7 +6,6 @@ import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import { saveFavouriteAlbums } from "../../store/usersSlice";
 import { Button } from "../../components/Button";
 import { FormField } from "../../components/FormField";
-import { AvatarUpload } from "./AvatarUpload";
 import { FavouriteAlbumsField, type FavAlbum } from "./FavouriteAlbumsField";
 import type { AlbumSearchResult, UserOut } from "../../types";
 
@@ -40,7 +39,6 @@ export function SettingsForm({ user }: { user: UserOut }) {
   const [fullName, setFullName] = useState(user.full_name);
   const [biography, setBiography] = useState(user.biography ?? "");
   const [birthDate, setBirthDate] = useState(user.birth_date);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [selectedAlbums, setSelectedAlbums] = useState<FavAlbum[]>(
     favouriteAlbums.map(userFavToFavAlbum),
   );
@@ -62,17 +60,11 @@ export function SettingsForm({ user }: { user: UserOut }) {
     e.preventDefault();
     setSaveError(null);
     try {
-      let avatarFilename = user.profile_picture;
-      if (avatarFile) {
-        const { profile_picture } = await api.uploadAvatar(avatarFile);
-        avatarFilename = profile_picture;
-      }
       const [updatedUser, albumsAction] = await Promise.all([
         api.updateUser({
           full_name: fullName,
           biography: biography || null,
           birth_date: birthDate,
-          profile_picture: avatarFilename,
         }),
         dispatch(saveFavouriteAlbums(selectedAlbums.map((a) => a.spotify_id))),
       ]);
@@ -99,11 +91,6 @@ export function SettingsForm({ user }: { user: UserOut }) {
     }
   }
 
-  /**
-   * Renders only the form fields and submission logic.
-   * The page shell (section, card, eyebrow, title) is owned by Settings.tsx
-   * via FormPageShell — keeping SettingsForm focused on a single responsibility.
-   */
   return (
     <form className="settings__form" onSubmit={handleSubmit}>
       <FormField
@@ -153,8 +140,6 @@ export function SettingsForm({ user }: { user: UserOut }) {
           required
         />
       </FormField>
-
-      <AvatarUpload onFileChange={setAvatarFile} />
 
       <FavouriteAlbumsField
         selected={selectedAlbums}

@@ -11,12 +11,14 @@ export default function Signup() {
   const { signup } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [emailConflict, setEmailConflict] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     setError(null);
+    setEmailConflict(false);
     setLoading(true);
     try {
       await signup({
@@ -27,8 +29,18 @@ export default function Signup() {
         birth_date: fd.get("birth_date") as string,
       });
       navigate("/");
-    } catch {
-      setError("Could not create account. Please try again.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      if (/email/i.test(msg) && /already|exist|taken|registered/i.test(msg)) {
+        setError("That email is already registered.");
+        setEmailConflict(true);
+      } else if (/username/i.test(msg) && /already|exist|taken/i.test(msg)) {
+        setError("That username is already taken. Please choose another.");
+      } else if (/password/i.test(msg)) {
+        setError("Password does not meet the requirements. Please try a different one.");
+      } else {
+        setError("Could not create account. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -92,6 +104,13 @@ export default function Signup() {
         </Button>
       </form>
       <FormError message={error} />
+      {emailConflict && (
+        <p className="auth__alt">
+          <Link to="/login" className="auth__link">
+            Log in instead
+          </Link>
+        </p>
+      )}
       <p className="auth__alt">
         Already have an account?{" "}
         <Link to="/login" className="auth__link">

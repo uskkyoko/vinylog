@@ -44,7 +44,7 @@ export function RecommendForm({ onResult }: RecommendFormProps) {
     try {
       const result = await generate(userInput.trim() || null);
       onResult(result);
-    } catch {}
+    } catch { /* error surfaced via the `error` state from useRecommend */ }
   }
 
   return (

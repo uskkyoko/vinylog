@@ -1,0 +1,9 @@
+.avatar--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  user-select: none;
+  flex-shrink: 0;
+}

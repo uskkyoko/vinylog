@@ -4,7 +4,7 @@ import { get, mutateJSON, mutateVoid } from "./http";
 export const listsApi = {
   getLists: (): Promise<ListOut[]> => get<ListOut[]>("/lists/"),
 
-  getList: (id: number): Promise<ListOut> => get<ListOut>(`/lists/${id}/`),
+  getList: (id: number): Promise<ListOut> => get<ListOut>(`/lists/${id}`),
 
   getMyLists: (): Promise<ListOut[]> => get<ListOut[]>("/lists/my-lists"),
 

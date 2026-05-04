@@ -24,8 +24,8 @@ export default function Login() {
         password: fd.get("password") as string,
       });
       navigate("/");
-    } catch (e) {
-      setError(`Invalid email or password. ${e}`);
+    } catch {
+      setError("Incorrect email or password.");
     } finally {
       setLoading(false);
     }

@@ -71,7 +71,7 @@
 }
 
 /* Carousel-specific sizing for album cards */
-.album-card {
+.albums-carousel__track .album-card {
   flex: 0 0 calc(25% - 0.75rem);
 }
 
@@ -159,13 +159,13 @@
 }
 
 @media (max-width: 1200px) {
-  .album-card {
+  .albums-carousel__track .album-card {
     flex: 0 0 calc(33.333% - 0.67rem);
   }
 }
 
 @media (max-width: 1024px) {
-  .album-card {
+  .albums-carousel__track .album-card {
     flex: 0 0 calc(50% - 0.75rem);
   }
 
@@ -200,7 +200,7 @@
     display: none;
   }
 
-  .album-card {
+  .albums-carousel__track .album-card {
     flex: 0 0 calc(50% - 0.5rem);
     min-width: calc(50% - 0.5rem);
   }
@@ -231,18 +231,10 @@
 }
 
 @media (max-width: 480px) {
-  .album-card {
+  .albums-carousel__track .album-card {
     flex: 0 0 calc(33.333% - 0.53rem);
     min-width: calc(33.333% - 0.53rem);
     padding: 0.75rem;
-  }
-
-  .album-card__title {
-    font-size: 0.95rem;
-  }
-
-  .album-card__artist {
-    font-size: 0.85rem;
   }
 
   .albums-carousel__track {

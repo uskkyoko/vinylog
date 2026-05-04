@@ -6,7 +6,7 @@ export function ProfileListCard({ list }: { list: ListOut }) {
   return (
     <Link to={`/lists/${list.id}`} className="profile-lists__card">
       <p className="profile-lists__title">{list.name}</p>
-      {list.albums.length > 0 && <AlbumPreviews albums={list.albums} />}
+      {!!list.albums?.length && <AlbumPreviews albums={list.albums} />}
     </Link>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../components/Button";
+import { Avatar } from "../../components/Avatar";
 import { api } from "../../api";
 import type { UserSummary } from "../../types";
 
@@ -53,17 +54,11 @@ export function FollowModal({
                   className="follow-modal__user"
                   onClick={onClose}
                 >
-                  {u.profile_picture ? (
-                    <img
-                      src={u.profile_picture}
-                      alt={u.username}
-                      className="follow-modal__avatar"
-                    />
-                  ) : (
-                    <div className="follow-modal__avatar follow-modal__avatar--placeholder">
-                      {u.username[0].toUpperCase()}
-                    </div>
-                  )}
+                  <Avatar
+                    src={u.profile_picture}
+                    name={u.username}
+                    className="follow-modal__avatar"
+                  />
                   <div className="follow-modal__user-info">
                     <span className="follow-modal__username">
                       @{u.username}

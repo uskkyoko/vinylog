@@ -9,6 +9,7 @@
 import { useState } from "react";
 import { Button, ButtonLink } from "../../components/Button";
 import type { UserOut, AlbumOut } from "../../types";
+import { Avatar } from "../../components/Avatar";
 import { FollowModal } from "./FollowModal";
 import { FavouriteAlbums } from "./FavouriteAlbums";
 
@@ -35,13 +36,11 @@ export function ProfileHeader({
     <div className="card profile__header">
       <div className="profile__head-row">
         <div className="profile__identity">
-          {user.profile_picture && (
-            <img
-              src={user.profile_picture}
-              alt={`${user.username}'s profile picture`}
-              className="profile__avatar"
-            />
-          )}
+          <Avatar
+            src={user.profile_picture}
+            name={user.full_name || user.username}
+            className="profile__avatar"
+          />
           <div className="profile__identity-info">
             <p className="eyebrow">@{user.username}</p>
             <h1 className="profile__name">{user.full_name}</h1>

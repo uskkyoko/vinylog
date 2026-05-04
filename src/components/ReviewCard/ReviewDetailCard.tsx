@@ -74,7 +74,7 @@ export function ReviewDetailCard({
               aria-label={`Rating: ${review.rating} out of 5`}
             >
               <span className="review-view__rating-value">{review.rating}</span>
-              <span className="review-view__rating-scale">/ 5.0</span>
+              <span className="review-view__rating-scale">/ 5</span>
             </div>
           </div>
 

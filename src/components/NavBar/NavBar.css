@@ -117,15 +117,16 @@
 .navbar__burger {
   display: none;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
+  gap: 5px;
   width: 36px;
   height: 36px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
-  padding: 6px;
+  padding: 0;
   z-index: 1001;
   position: relative;
   flex-shrink: 0;
@@ -140,32 +141,34 @@
 }
 
 .navbar__burger:focus {
+  outline: none;
+}
+
+.navbar__burger:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 6px;
 }
 
 .navbar__burger-line {
   width: 20px;
-  height: 3px;
+  height: 2px;
   background-color: var(--text);
   border-radius: 2px;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.2s ease;
   transform-origin: center;
   display: block;
 }
 
 .navbar__burger--active .navbar__burger-line:nth-child(1) {
-  transform: rotate(45deg) translate(7px, 7px);
+  transform: translateY(7px) rotate(45deg);
 }
 
 .navbar__burger--active .navbar__burger-line:nth-child(2) {
   opacity: 0;
-  transform: translateX(-10px);
 }
 
 .navbar__burger--active .navbar__burger-line:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* Mobile Menu Overlay */
@@ -176,12 +179,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100vw;
-  height: 100vh;
   background: rgba(5, 6, 7, 0.98);
   backdrop-filter: blur(20px);
   z-index: 1000;
-  padding: 5rem 1.5rem 2rem;
+  padding: 4.5rem 1.5rem 2rem;
   overflow-y: auto;
   transform: translateY(-100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -315,16 +316,24 @@ body.navbar-menu-open {
   .navbar__burger {
     width: 32px;
     height: 32px;
-    padding: 5px;
+    gap: 4px;
   }
 
   .navbar__burger-line {
     width: 18px;
-    height: 2.5px;
+    height: 2px;
+  }
+
+  .navbar__burger--active .navbar__burger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .navbar__burger--active .navbar__burger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
   }
 
   .navbar__mobile-menu {
-    padding: 4.5rem 1rem 1.5rem;
+    padding: 4rem 1rem 1.5rem;
   }
 
   .navbar__mobile-menu .navbar__link {

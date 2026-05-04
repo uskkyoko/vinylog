@@ -40,15 +40,19 @@ export function ReviewForm({ defaultAlbum, review }: Props) {
     setLoading(true);
     try {
       if (isEdit) {
-        await dispatch(
+        const result = await dispatch(
           updateReview({
             id: review.id,
             data: { rating, comment: comment || null, favorite_song: favouriteTrack || null },
           }),
         );
-        navigate(`/reviews/${review.id}`);
+        if (updateReview.fulfilled.match(result)) {
+          navigate(`/reviews/${review.id}`);
+        } else {
+          setError(result.error.message ?? "Could not save changes. Please try again.");
+        }
       } else {
-        await dispatch(
+        const result = await dispatch(
           createReview({
             album_id: album!.id,
             rating,
@@ -56,15 +60,13 @@ export function ReviewForm({ defaultAlbum, review }: Props) {
             favorite_song: favouriteTrack || null,
           }),
         );
-        if (user) await dispatch(fetchReviews(user.username));
-        navigate("/reviews");
+        if (createReview.fulfilled.match(result)) {
+          if (user) await dispatch(fetchReviews(user.username));
+          navigate("/reviews");
+        } else {
+          setError(result.error.message ?? "Could not submit review. Please try again.");
+        }
       }
-    } catch {
-      setError(
-        isEdit
-          ? "Could not save changes. Please try again."
-          : "Could not submit review. Please try again.",
-      );
     } finally {
       setLoading(false);
     }

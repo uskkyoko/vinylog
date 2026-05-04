@@ -44,7 +44,9 @@ export function RecommendForm({ onResult }: RecommendFormProps) {
     try {
       const result = await generate(userInput.trim() || null);
       onResult(result);
-    } catch { /* error surfaced via the `error` state from useRecommend */ }
+    } catch {
+      /* error surfaced via the `error` state from useRecommend */
+    }
   }
 
   return (
@@ -59,10 +61,6 @@ export function RecommendForm({ onResult }: RecommendFormProps) {
           <h1 className="recommend-form__title">
             Discover your next favourite record
           </h1>
-          <p className="recommend-form__lead">
-            Describe a mood, era, or vibe — or leave blank and we'll pick based
-            on your taste.
-          </p>
         </header>
 
         <div className="recommend-form__card">

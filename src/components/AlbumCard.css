@@ -18,6 +18,9 @@
 .album-card__image-wrapper {
   width: 100%;
   aspect-ratio: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.75rem;
 }
 
 .album-card__cover {
@@ -39,6 +42,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  min-height: 3.6rem;
 }
 
 .album-card__title {

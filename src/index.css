@@ -538,9 +538,7 @@ button {
 
   /* Touch-friendly targets */
   .btn,
-  .navbar__link,
-  .album-card__cta,
-  a {
+  .navbar__link {
     min-height: 44px;
     display: inline-flex;
     align-items: center;

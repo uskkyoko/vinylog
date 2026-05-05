@@ -3,6 +3,7 @@ import "./Profile.css";
 import { AppLayout } from "../../components/AppLayout";
 import { PageLoading } from "../../components/PageLoading";
 import { PageNotFound } from "../../components/PageNotFound";
+import { Button } from "../../components/Button";
 import { useAuth } from "../../context/useAuth";
 import { useProfileData } from "../../hooks/useProfileData";
 import { ProfileHeader } from "./ProfileHeader";
@@ -38,7 +39,24 @@ export default function Profile() {
   if (authStatus === "loading") return <PageLoading />;
   if (isOwner && !currentUser) return null;
   if (!isOwner && loading) return <PageLoading />;
-  if (!isOwner && (error || !profileUser)) {
+  if (!isOwner && error) {
+    return (
+      <AppLayout>
+        <section className="profile">
+          <div className="container">
+            <div className="profile__error-card">
+              <h1 className="profile__error-title">Couldn't load profile</h1>
+              <p className="profile__error-message">{error}</p>
+              <Button onClick={refresh} variant="primary">
+                Try again
+              </Button>
+            </div>
+          </div>
+        </section>
+      </AppLayout>
+    );
+  }
+  if (!isOwner && !profileUser) {
     return <PageNotFound section="profile" message="User not found." />;
   }
 

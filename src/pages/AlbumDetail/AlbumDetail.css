@@ -94,6 +94,81 @@
   text-align: center;
 }
 
+.album-detail__review-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface-alt);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.album-detail__review-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.album-detail__review-tile-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.album-detail__review-tile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.album-detail__review-tile-avatar.avatar--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.album-detail__review-tile-author {
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-detail__review-tile-rating {
+  font-weight: 600;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.album-detail__review-tile-comment {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.album-detail__review-tile-date {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
 /* ── Add to list dropdown ────────────────────────── */
 
 .add-to-list {

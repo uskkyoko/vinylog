@@ -73,7 +73,7 @@ export default function AlbumDetail() {
           {album.spotify_id && (
             <AlbumSpotifyEmbed spotifyId={album.spotify_id} />
           )}
-          <AlbumDetailReviews reviews={album.reviews} album={album} />
+          <AlbumDetailReviews reviews={album.reviews} />
         </div>
       </section>
     </AppLayout>

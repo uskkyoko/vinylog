@@ -3,23 +3,25 @@ import type { ReviewOut } from "../../types";
 
 export function ProfileReviewCard({ review }: { review: ReviewOut }) {
   const album = review.album;
-  if (!album) return null;
+  const title = album?.title ?? "Album unavailable";
 
   return (
     <Link to={`/reviews/${review.id}`} className="profile-reviews__tile">
       <div className="profile-reviews__tile-header">
-        <p className="profile-reviews__tile-title">{album.title}</p>
+        <p className="profile-reviews__tile-title">{title}</p>
         <span className="profile-reviews__tile-rating">{review.rating} ★</span>
       </div>
-      {album.cover_url && (
-        <div className="profile-reviews__tile-preview">
+      <div className="profile-reviews__tile-preview">
+        {album?.cover_url ? (
           <img
             src={album.cover_url}
             alt={album.title}
             className="profile-reviews__tile-cover"
           />
-        </div>
-      )}
+        ) : (
+          <div className="profile-reviews__tile-cover profile-reviews__tile-cover--placeholder" />
+        )}
+      </div>
       {review.comment && (
         <p className="profile-reviews__tile-comment">"{review.comment}"</p>
       )}

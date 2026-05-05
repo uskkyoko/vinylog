@@ -5,6 +5,31 @@
   gap: 1.5rem;
 }
 
+.profile__error-card {
+  margin: 3rem auto;
+  max-width: 480px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile__error-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.profile__error-message {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 .profile__avatar {
   width: 80px;
   height: 80px;
@@ -303,6 +328,10 @@
   border: 2px solid var(--surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   display: block;
+}
+
+.profile-reviews__tile-cover--placeholder {
+  background: var(--surface);
 }
 
 .profile-reviews__tile-comment {

@@ -12,7 +12,7 @@ export const reviewsApi = {
     mutateJSON<ReviewOut>("/reviews/", "POST", data),
 
   updateReview: (id: number, data: ReviewUpdate): Promise<ReviewOut> =>
-    mutateJSON<ReviewOut>(`/reviews/${id}/`, "PUT", data),
+    mutateJSON<ReviewOut>(`/reviews/${id}`, "PUT", data),
 
   deleteReview: (id: number): Promise<void> =>
     mutateVoid(`/reviews/${id}`, "DELETE"),

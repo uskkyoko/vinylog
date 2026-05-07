@@ -7,6 +7,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://vinylog.onrender.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
